@@ -1,0 +1,33 @@
+Package: ClickHouseHTTP
+Type: Package
+Title: An simple HTTP database interface to 'ClickHouse'
+Version: 0.1.0
+Authors@R: c(
+    person(
+        "Patrice", "Godard",
+        role = c("aut", "cre","cph"),
+        email = "patrice.godard@gmail.com"
+    )
+    )
+Description: 'ClickHouse' (<https://clickhouse.com/>)
+   is an open-source, high performance columnar
+   OLAP (online analytical processing of queries) database management system
+   for real-time analytics using SQL. This 'DBI' backend
+   relies on the 'ClickHouse' HTTP interface and support HTTPS protocol.
+URL: https://github.com/patzaw/ClickHouseHTTP
+BugReports: https://github.com/patzaw/ClickHouseHTTP/issues
+Depends:
+   R (>= 3.6)
+Imports:
+   methods,
+   DBI (>= 0.3.0),
+   httr,
+   jsonlite,
+   arrow
+Suggests:
+   DBItest,
+   testthat
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
