@@ -3,30 +3,12 @@
 \docType{class}
 \name{ClickHouseHTTPConnection-class}
 \alias{ClickHouseHTTPConnection-class}
-\alias{dbIsValid,ClickHouseHTTPConnection-method}
-\alias{dbDisconnect,ClickHouseHTTPConnection-method}
 \alias{dbSendQuery,ClickHouseHTTPConnection,character-method}
-\alias{show,ClickHouseHTTPConnection-method}
 \alias{dbGetInfo,ClickHouseHTTPConnection-method}
-\alias{dbListTables,ClickHouseHTTPConnection-method}
-\alias{dbDataType,ClickHouseHTTPConnection-method}
-\alias{dbQuoteIdentifier,ClickHouseHTTPConnection,character-method}
-\alias{dbQuoteIdentifier,ClickHouseHTTPConnection,SQL-method}
-\alias{dbQuoteString,ClickHouseHTTPConnection,character-method}
-\alias{dbQuoteString,ClickHouseHTTPConnection,SQL-method}
-\alias{dbExistsTable,ClickHouseHTTPConnection,character-method}
-\alias{dbReadTable,ClickHouseHTTPConnection,character-method}
-\alias{dbListFields,ClickHouseHTTPConnection,character-method}
-\alias{dbRemoveTable,ClickHouseHTTPConnection,ANY-method}
 \alias{dbCreateTable,ClickHouseHTTPConnection-method}
-\alias{dbAppendTable,ClickHouseHTTPConnection-method}
 \alias{dbWriteTable,ClickHouseHTTPConnection,ANY-method}
-\title{ClickHouseHTTP connection class.}
+\title{ClickHouseHTTPConnection class.}
 \usage{
-\S4method{dbIsValid}{ClickHouseHTTPConnection}(dbObj, ...)
-
-\S4method{dbDisconnect}{ClickHouseHTTPConnection}(conn, ...)
-
 \S4method{dbSendQuery}{ClickHouseHTTPConnection,character}(
   conn,
   statement,
@@ -35,29 +17,7 @@
   ...
 )
 
-\S4method{show}{ClickHouseHTTPConnection}(object)
-
 \S4method{dbGetInfo}{ClickHouseHTTPConnection}(dbObj, ...)
-
-\S4method{dbListTables}{ClickHouseHTTPConnection}(conn, ...)
-
-\S4method{dbDataType}{ClickHouseHTTPConnection}(dbObj, obj, ...)
-
-\S4method{dbQuoteIdentifier}{ClickHouseHTTPConnection,character}(conn, x, ...)
-
-\S4method{dbQuoteIdentifier}{ClickHouseHTTPConnection,SQL}(conn, x, ...)
-
-\S4method{dbQuoteString}{ClickHouseHTTPConnection,character}(conn, x, ...)
-
-\S4method{dbQuoteString}{ClickHouseHTTPConnection,SQL}(conn, x, ...)
-
-\S4method{dbExistsTable}{ClickHouseHTTPConnection,character}(conn, name, ...)
-
-\S4method{dbReadTable}{ClickHouseHTTPConnection,character}(conn, name, ...)
-
-\S4method{dbListFields}{ClickHouseHTTPConnection,character}(conn, name, ...)
-
-\S4method{dbRemoveTable}{ClickHouseHTTPConnection,ANY}(conn, name, ...)
 
 \S4method{dbCreateTable}{ClickHouseHTTPConnection}(
   conn,
@@ -70,8 +30,6 @@
   temporary = FALSE
 )
 
-\S4method{dbAppendTable}{ClickHouseHTTPConnection}(conn, name, value, ..., row.names = NULL)
-
 \S4method{dbWriteTable}{ClickHouseHTTPConnection,ANY}(
   conn,
   name,
@@ -79,10 +37,279 @@
   overwrite = FALSE,
   append = FALSE,
   engine = "TinyLog",
-  row.names = NULL,
   ...
 )
 }
+\arguments{
+\item{conn}{a ClickHouseHTTPConnection object created with [dbConnect()]}
+
+\item{statement}{the SQL query statement}
+
+\item{format}{the format used by ClickHouse to send the results.
+Two formats are supported:
+"Arrow" (default) and "TabSeparatedWithNamesAndTypes"}
+
+\item{file}{a path to a file to send along the query (default: NA)}
+
+\item{...}{Other parameters passed on to methods}
+
+\item{dbObj}{a ClickHouseHTTPConnection object}
+
+\item{name}{the name of the table to create}
+
+\item{fields}{a character vector with the name of the fields and their
+ClickHouse type
+(e.g.
+`c("text_col String", "num_col Nullable(Float64)", "nul_col Array(Int32)")`
+)}
+
+\item{engine}{the ClickHouse table engine as described in ClickHouse
+[documentation](https://clickhouse.com/docs/en/engines/table-engines/).
+Examples:
+- `"TinyLog"` (default)
+- `"MergeTree() ORDER BY (expr)"`
+(expr generally correspond to fields separated by ",")}
+
+\item{overwrite}{if TRUE and if a table with the same name exists,
+then it is deleted before creating the new one (default: FALSE)}
+
+\item{row.names}{unsupported parameter (add for compatibility reason)}
+
+\item{temporary}{unsupported parameter (add for compatibility reason)}
+
+\item{value}{the table to write}
+
+\item{append}{if TRUE, the values are added to the database table if
+it exists (default: FALSE).}
+}
+\value{
+A ClickHouseHTTPResult object
+
+A list with the following elements:
+- name: "ClickHouseHTTPConnection"
+- db.version: the version of ClickHouse
+- uptime: ClickHouse uptime
+- dbname: the default database
+- username: user name
+- host: ClickHouse host
+- port: ClickHouse port
+- https: Is the connection using HTTPS protocol instead of HTTP
+
+dbCreateTable() returns TRUE, invisibly.
+
+TRUE; called for side effects
+}
 \description{
-ClickHouseHTTP connection class.
+ClickHouseHTTPConnection class.
+
+Send SQL query to ClickHouse
+
+Information about the ClickHouse database
+
+Create a table in ClickHouse
+
+Write a table in ClickHouse
+}
+\examples{
+\dontrun{
+
+## Connection ----
+
+library(ClickHouseHTTP)
+### HTTP connection ----
+
+con <- dbConnect(
+   ClickHouseHTTP(), host="localhost",
+   port=8123
+)
+
+### HTTPS connection (without ssl peer verification) ----
+
+con <- dbConnect(
+   ClickHouseHTTP(), host="localhost",
+   port=8443, https=TRUE, ssl_verifypeer=FALSE
+)
+
+## Write a table in the database ----
+
+library(dplyr)
+data("mtcars")
+mtcars <- as_tibble(mtcars, rownames="car")
+dbWriteTable(con, "mtcars", mtcars)
+
+## Query the database ----
+
+carsFromDB <- DBI::dbReadTable(con, "mtcars")
+DBI::dbGetQuery(con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110")
+
+## By default, ClickHouseHTTP relies on the
+## Apache Arrow format provided by ClickHouse.
+## The `format` argument of the `dbGetQuery()` function can be used to
+## rely on the *TabSeparatedWithNamesAndTypes* format.
+selCars <- DBI::dbGetQuery(
+   con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
+   format="TabSeparatedWithNamesAndTypes"
+)
+## Identifying the original ClickHouse data types
+attr(selCars, "type")
+
+## Using alternative databases stored in ClickHouse ----
+
+dbSendQuery(con, "CREATE DATABASE swiss")
+dbSendQuery(con, "USE swiss")
+
+## The chosen database is used until the session expires.
+## It can also be chosen when connecting using the `dbname` argument of
+## the `dbConnect()` function.
+
+## The example below shows that spaces in column names are supported.
+## It also shows the support of R `list` using the *Array* ClickHouse type.
+data("swiss")
+swiss <- as_tibble(swiss, rownames="province")
+swiss <- mutate(swiss, "pr letters"=strsplit(province, ""))
+dbWriteTable(
+   con, "swiss", swiss,
+   engine="MergeTree() ORDER BY (Fertility, province)"
+)
+swissFromDB <- DBI::dbReadTable(con, "swiss")
+
+## A table from another database can also be accessed as following:
+DBI::dbReadTable(con, DBI::SQL("default.mtcars"))
+
+}
+\dontrun{
+
+## Connection ----
+
+library(ClickHouseHTTP)
+### HTTP connection ----
+
+con <- dbConnect(
+   ClickHouseHTTP(), host="localhost",
+   port=8123
+)
+
+### HTTPS connection (without ssl peer verification) ----
+
+con <- dbConnect(
+   ClickHouseHTTP(), host="localhost",
+   port=8443, https=TRUE, ssl_verifypeer=FALSE
+)
+
+## Write a table in the database ----
+
+library(dplyr)
+data("mtcars")
+mtcars <- as_tibble(mtcars, rownames="car")
+dbWriteTable(con, "mtcars", mtcars)
+
+## Query the database ----
+
+carsFromDB <- DBI::dbReadTable(con, "mtcars")
+DBI::dbGetQuery(con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110")
+
+## By default, ClickHouseHTTP relies on the
+## Apache Arrow format provided by ClickHouse.
+## The `format` argument of the `dbGetQuery()` function can be used to
+## rely on the *TabSeparatedWithNamesAndTypes* format.
+selCars <- DBI::dbGetQuery(
+   con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
+   format="TabSeparatedWithNamesAndTypes"
+)
+## Identifying the original ClickHouse data types
+attr(selCars, "type")
+
+## Using alternative databases stored in ClickHouse ----
+
+dbSendQuery(con, "CREATE DATABASE swiss")
+dbSendQuery(con, "USE swiss")
+
+## The chosen database is used until the session expires.
+## It can also be chosen when connecting using the `dbname` argument of
+## the `dbConnect()` function.
+
+## The example below shows that spaces in column names are supported.
+## It also shows the support of R `list` using the *Array* ClickHouse type.
+data("swiss")
+swiss <- as_tibble(swiss, rownames="province")
+swiss <- mutate(swiss, "pr letters"=strsplit(province, ""))
+dbWriteTable(
+   con, "swiss", swiss,
+   engine="MergeTree() ORDER BY (Fertility, province)"
+)
+swissFromDB <- DBI::dbReadTable(con, "swiss")
+
+## A table from another database can also be accessed as following:
+DBI::dbReadTable(con, DBI::SQL("default.mtcars"))
+
+}
+\dontrun{
+
+## Connection ----
+
+library(ClickHouseHTTP)
+### HTTP connection ----
+
+con <- dbConnect(
+   ClickHouseHTTP(), host="localhost",
+   port=8123
+)
+
+### HTTPS connection (without ssl peer verification) ----
+
+con <- dbConnect(
+   ClickHouseHTTP(), host="localhost",
+   port=8443, https=TRUE, ssl_verifypeer=FALSE
+)
+
+## Write a table in the database ----
+
+library(dplyr)
+data("mtcars")
+mtcars <- as_tibble(mtcars, rownames="car")
+dbWriteTable(con, "mtcars", mtcars)
+
+## Query the database ----
+
+carsFromDB <- DBI::dbReadTable(con, "mtcars")
+DBI::dbGetQuery(con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110")
+
+## By default, ClickHouseHTTP relies on the
+## Apache Arrow format provided by ClickHouse.
+## The `format` argument of the `dbGetQuery()` function can be used to
+## rely on the *TabSeparatedWithNamesAndTypes* format.
+selCars <- DBI::dbGetQuery(
+   con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
+   format="TabSeparatedWithNamesAndTypes"
+)
+## Identifying the original ClickHouse data types
+attr(selCars, "type")
+
+## Using alternative databases stored in ClickHouse ----
+
+dbSendQuery(con, "CREATE DATABASE swiss")
+dbSendQuery(con, "USE swiss")
+
+## The chosen database is used until the session expires.
+## It can also be chosen when connecting using the `dbname` argument of
+## the `dbConnect()` function.
+
+## The example below shows that spaces in column names are supported.
+## It also shows the support of R `list` using the *Array* ClickHouse type.
+data("swiss")
+swiss <- as_tibble(swiss, rownames="province")
+swiss <- mutate(swiss, "pr letters"=strsplit(province, ""))
+dbWriteTable(
+   con, "swiss", swiss,
+   engine="MergeTree() ORDER BY (Fertility, province)"
+)
+swissFromDB <- DBI::dbReadTable(con, "swiss")
+
+## A table from another database can also be accessed as following:
+DBI::dbReadTable(con, DBI::SQL("default.mtcars"))
+
+}
+}
+\seealso{
+[ClickHouseHTTPResult-class]
 }

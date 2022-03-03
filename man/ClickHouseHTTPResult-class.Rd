@@ -3,11 +3,7 @@
 \docType{class}
 \name{ClickHouseHTTPResult-class}
 \alias{ClickHouseHTTPResult-class}
-\alias{dbFetch,ClickHouseHTTPResult-method}
-\title{ClickHouseHTTP result class.}
-\usage{
-\S4method{dbFetch}{ClickHouseHTTPResult}(res, n = -1, ...)
-}
+\title{ClickHouseHTTPResult class.}
 \description{
-ClickHouseHTTP result class.
+ClickHouseHTTPResult class.
 }

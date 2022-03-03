@@ -1,6 +1,6 @@
 Package: ClickHouseHTTP
 Type: Package
-Title: An simple HTTP database interface to 'ClickHouse'
+Title: A Simple HTTP Database Interface to 'ClickHouse'
 Version: 0.1.0
 Authors@R: c(
     person(
@@ -25,9 +25,9 @@ Imports:
    jsonlite,
    arrow
 Suggests:
-   DBItest,
-   testthat
+   knitr,
+   rmarkdown,
+   dplyr
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.1.2

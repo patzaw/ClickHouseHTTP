@@ -1,12 +1,12 @@
 ###############################################################################@
 ## ClickHouseHTTPConnection----
-#' ClickHouseHTTP connection class.
+#' ClickHouseHTTPConnection class.
 #'
 #' @export
 #'
 setClass(
    "ClickHouseHTTPConnection",
-   contains = "DBIConnection",
+   contains="DBIConnection",
    slots=list(
       host="character",
       port="integer",
@@ -21,11 +21,7 @@ setClass(
 
 ###############################################################################@
 ## dbIsValid ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod("dbIsValid", "ClickHouseHTTPConnection", function(dbObj, ...){
    toRet <- try(.check_db_session(dbObj), silent=TRUE)
    if(inherits(toRet, "try-error")){
@@ -42,11 +38,7 @@ setMethod("dbIsValid", "ClickHouseHTTPConnection", function(dbObj, ...){
 
 ###############################################################################@
 ## dbDisconnect ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod("dbDisconnect", "ClickHouseHTTPConnection", function(conn, ...){
    xn <- deparse(substitute(conn))
    conn@session <- paste0(conn@session, "off")
@@ -56,6 +48,21 @@ setMethod("dbDisconnect", "ClickHouseHTTPConnection", function(conn, ...){
 
 ###############################################################################@
 ## dbSendQuery ----
+#' Send SQL query to ClickHouse
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param statement the SQL query statement
+#' @param format the format used by ClickHouse to send the results.
+#' Two formats are supported:
+#' "Arrow" (default) and "TabSeparatedWithNamesAndTypes"
+#' @param file a path to a file to send along the query (default: NA)
+#' @param ... Other parameters passed on to methods
+#'
+#' @return A ClickHouseHTTPResult object
+#'
+#' @example supp/examples/global-example.R
+#'
+#' @seealso [ClickHouseHTTPResult-class]
 #'
 #' @rdname ClickHouseHTTPConnection-class
 #'
@@ -113,11 +120,7 @@ setMethod(
 )
 ###############################################################################@
 ## show ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod("show", "ClickHouseHTTPConnection", function(object){
    cat("<ClickHouseHTTPConnection>\n")
    if(dbIsValid(object)){
@@ -133,6 +136,19 @@ setMethod("show", "ClickHouseHTTPConnection", function(object){
 
 ###############################################################################@
 ## dbGetInfo ----
+#' Information about the ClickHouse database
+#'
+#' @param dbObj a ClickHouseHTTPConnection object
+#'
+#' @return A list with the following elements:
+#' - name: "ClickHouseHTTPConnection"
+#' - db.version: the version of ClickHouse
+#' - uptime: ClickHouse uptime
+#' - dbname: the default database
+#' - username: user name
+#' - host: ClickHouse host
+#' - port: ClickHouse port
+#' - https: Is the connection using HTTPS protocol instead of HTTP
 #'
 #' @rdname ClickHouseHTTPConnection-class
 #'
@@ -146,7 +162,7 @@ setMethod("dbGetInfo", "ClickHouseHTTPConnection", function(dbObj, ...){
          ", currentDatabase() as database"
       )
    )
-   list(
+   return(list(
       name="ClickHouseHTTPConnection",
       db.version=chinfo$version,
       uptime=chinfo$uptime,
@@ -155,118 +171,89 @@ setMethod("dbGetInfo", "ClickHouseHTTPConnection", function(dbObj, ...){
       host=dbObj@host,
       port=dbObj@port,
       https=dbObj@https
-   )
+   ))
 
 })
 
 ###############################################################################@
 ## dbListTables ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod("dbListTables", "ClickHouseHTTPConnection", function(conn, ...){
-   as.character(DBI::dbGetQuery(conn, "SHOW TABLES")[[1]])
+   return(as.character(DBI::dbGetQuery(conn, "SHOW TABLES")[[1]]))
 })
 
 ###############################################################################@
 ## dbDataType ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbDataType", "ClickHouseHTTPConnection", function(dbObj, obj, ...){
-      dbDataType(ClickHouseHTTP(), obj)
+      return(dbDataType(ClickHouseHTTP(), obj))
    },
-   valueClass = "character"
+   valueClass="character"
 )
 
 ###############################################################################@
 ## dbQuoteIdentifier.character ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbQuoteIdentifier", c("ClickHouseHTTPConnection", "character"),
     function(conn, x, ...){
        if(anyNA(x)){
           stop("Input to dbQuoteIdentifier must not contain NA.")
        }else{
-          x <- gsub('\\', '\\\\', x, fixed = TRUE)
-          x <- gsub('`', '\\`', x, fixed = TRUE)
-          DBI::SQL(paste0('`', x, '`'))
+          x <- gsub('\\', '\\\\', x, fixed=TRUE)
+          x <- gsub('`', '\\`', x, fixed=TRUE)
+          return(DBI::SQL(paste0('`', x, '`')))
        }
     }
 )
 
 ###############################################################################@
 ## dbQuoteIdentifier.SQL ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbQuoteIdentifier", c("ClickHouseHTTPConnection", "SQL"),
-   function(conn, x, ...){x}
+   function(conn, x, ...){
+      return(x)
+   }
 )
 
 ###############################################################################@
 ## dbQuoteString.character ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbQuoteString", c("ClickHouseHTTPConnection", "character"),
    function(conn, x, ...){
-      x <- gsub('\\', '\\\\', x, fixed = TRUE)
-      x <- gsub("'", "\\'", x, fixed = TRUE)
+      x <- gsub('\\', '\\\\', x, fixed=TRUE)
+      x <- gsub("'", "\\'", x, fixed=TRUE)
       return(DBI::SQL(ifelse(is.na(x), "NULL", paste0("'", x, "'"))))
    }
 )
 
 ###############################################################################@
 ## dbQuoteString.SQL ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbQuoteString", c("ClickHouseHTTPConnection", "SQL"),
-   function(conn, x, ...){x}
+   function(conn, x, ...){
+      return(x)
+   }
 )
 
 ###############################################################################@
 ## dbExistsTable ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbExistsTable", c("ClickHouseHTTPConnection", "character"),
    function(conn, name, ...){
       qname <- dbQuoteIdentifier(conn, name)
       return(DBI::dbGetQuery(conn, paste("EXISTS", qname))[[1]])
-      # as.logical(qname %in% dbQuoteIdentifier(conn, dbListTables(conn)))
    }
 )
 
 ###############################################################################@
 ## dbReadTable ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbReadTable", c("ClickHouseHTTPConnection", "character"),
    function(conn, name,...){
@@ -302,25 +289,17 @@ setMethod(
 
 ###############################################################################@
 ## dbListFields ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbListFields", c("ClickHouseHTTPConnection", "character"),
    function(conn, name, ...){
    qname <- dbQuoteIdentifier(conn, name)
-   DBI::dbGetQuery(conn, paste("DESCRIBE TABLE", qname))$name
+   return(DBI::dbGetQuery(conn, paste("DESCRIBE TABLE", qname))$name)
 })
 
 ###############################################################################@
 ## dbRemoveTable ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbRemoveTable", "ClickHouseHTTPConnection",
    function(conn, name, ...){
@@ -332,6 +311,30 @@ setMethod(
 
 ###############################################################################@
 ## dbCreateTable ----
+#' Create a table in ClickHouse
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param name the name of the table to create
+#' @param fields a character vector with the name of the fields and their
+#' ClickHouse type
+#' (e.g.
+#' `c("text_col String", "num_col Nullable(Float64)", "nul_col Array(Int32)")`
+#' )
+#' @param engine the ClickHouse table engine as described in ClickHouse
+#' [documentation](https://clickhouse.com/docs/en/engines/table-engines/).
+#' Examples:
+#' - `"TinyLog"` (default)
+#' - `"MergeTree() ORDER BY (expr)"`
+#' (expr generally correspond to fields separated by ",")
+#' @param overwrite if TRUE and if a table with the same name exists,
+#' then it is deleted before creating the new one (default: FALSE)
+#' @param row.names unsupported parameter (add for compatibility reason)
+#' @param temporary unsupported parameter (add for compatibility reason)
+#' @param ... Other parameters passed on to methods
+#'
+#' @return dbCreateTable() returns TRUE, invisibly.
+#'
+#' @example supp/examples/global-example.R
 #'
 #' @rdname ClickHouseHTTPConnection-class
 #'
@@ -364,28 +367,44 @@ setMethod(
 
 ###############################################################################@
 ## dbAppendTable ----
-#'
-#' @rdname ClickHouseHTTPConnection-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbAppendTable", "ClickHouseHTTPConnection",
    function(
-      conn, name, value, ..., row.names = NULL
+      conn, name, value, ..., row.names=NULL
    ){
       qname <- dbQuoteIdentifier(conn, name)
       tmpf <- tempfile()
       on.exit(file.remove(tmpf))
       arrow::write_feather(value, tmpf)
       query <- sprintf("INSERT INTO %s FORMAT Arrow", qname)
-      dbSendQuery(conn=conn, statement=query, file=tmpf)
-      return(invisible(TRUE))
+      res <- dbSendQuery(conn=conn, statement=query, file=tmpf)
+      return(invisible(dbGetRowsAffected(res)))
    }
 )
 
 ###############################################################################@
 ## dbWriteTable ----
+#' Write a table in ClickHouse
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param name the name of the table to create
+#' @param value the table to write
+#' @param overwrite if TRUE and if a table with the same name exists,
+#' then it is deleted before creating the new one (default: FALSE)
+#' @param append if TRUE, the values are added to the database table if
+#' it exists (default: FALSE).
+#' @param engine the ClickHouse table engine as described in ClickHouse
+#' [documentation](https://clickhouse.com/docs/en/engines/table-engines/).
+#' Examples:
+#' - `"TinyLog"` (default)
+#' - `"MergeTree() ORDER BY (expr)"`
+#' (expr generally correspond to fields separated by ",")
+#' @param ... Other parameters passed on to methods
+#'
+#' @return TRUE; called for side effects
+#'
+#' @example supp/examples/global-example.R
 #'
 #' @rdname ClickHouseHTTPConnection-class
 #'
@@ -396,7 +415,7 @@ setMethod(
    function(
       conn, name, value,
       overwrite=FALSE, append=FALSE,
-      engine="TinyLog", row.names=NULL, ...
+      engine="TinyLog", ...
 
    ){
       if(overwrite && append){
@@ -406,21 +425,21 @@ setMethod(
       if(!append){
          cdef <- unlist(lapply(
             value, function(x){
-               type <- dbDataType(k, x)
+               type <- dbDataType(conn, x)
                if(any(is.na(x))){
                   type <- sprintf("Nullable(%s)", type)
                }
                return(type)
             }
          ))
-         fields <- paste(names(cdef), cdef)
+         fields <- paste(dbQuoteIdentifier(conn, names(cdef)), cdef)
          dbCreateTable(
             conn=conn, name=name, fields=fields,
             engine=engine, overwrite=overwrite
          )
       }
-      dbAppendTable(conn=conn, name=name, value=value)
-      return(invisible(TRUE))
+      toRet <- dbAppendTable(conn=conn, name=name, value=value)
+      return(invisible(toRet))
    }
 )
 

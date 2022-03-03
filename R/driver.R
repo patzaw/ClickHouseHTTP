@@ -1,6 +1,6 @@
 ###############################################################################@
 ## ClickHouseHTTPDriver ----
-#' Driver for the ClickHouse database using HTTP interface
+#' Driver for the ClickHouse database using HTTP(S) interface
 #'
 #' @export
 #'
@@ -8,21 +8,25 @@ setClass("ClickHouseHTTPDriver", contains = "DBIDriver")
 
 ###############################################################################@
 ## dbUnloadDrive ----
-#'
-#' @export
-#'
+##
 setMethod("dbUnloadDriver", "ClickHouseHTTPDriver", function(drv, ...){
    TRUE
 })
 
 ###############################################################################@
 ## show ----
+##
 setMethod("show", "ClickHouseHTTPDriver", function(object){
    cat("<ClickHouseHTTPDriver>\n")
 })
 
 ###############################################################################@
 ## Driver creator ----
+#' Create a ClickHouseHTTP DBI driver
+#'
+#' @return A ClickHouseHTTPDriver
+#'
+#' @seealso [ClickHouseHTTPDriver-class]
 #'
 #' @export
 #'
@@ -32,7 +36,7 @@ ClickHouseHTTP <- function(){
 
 ###############################################################################@
 ## dbConnect ----
-#' Connect to a ClickHouse database.
+#' Connect to a ClickHouse database using the ClickHouseHTTP DBI
 #'
 #' @param drv A driver object created by [ClickHouseHTTP()]
 #' @param host name of the database host (default: "localhost")
@@ -40,10 +44,24 @@ ClickHouseHTTP <- function(){
 #' @param dbname name of the default database (default: "default")
 #' @param user user name (default: "default")
 #' @param password user password (default: "")
+#' @param https a logical to use the HTTPS protocol (default: FALSE)
+#' @param ssl_verifypeer a logical to verify SSL certificate when using
+#' HTTPS (default: TRUE)
+#' @param session_timeout timeout in seconds (default: 3600L seconds)
+#' @param convert_uint a logical: if TRUE (default), UInt ClickHouse
+#' data types are converted in the following R classes:
+#' - UInt8 : logical
+#' - UInt16: Date
+#' - UInt32: POSIXct
+#' @param ... Other parameters passed on to methods
 #'
 #' @return A ClickHouseHTTPConnection
 #'
+#' @example supp/examples/global-example.R
+#'
 #' @rdname ClickHouseHTTPDriver-class
+#'
+#' @seealso [ClickHouseHTTPConnection-class]
 #'
 #' @export
 #'
@@ -112,11 +130,7 @@ setMethod(
 
 ###############################################################################@
 ## dbDataType ----
-#'
-#' @rdname ClickHouseHTTPDriver-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbDataType", "ClickHouseHTTPDriver",
    function(dbObj, obj, ...){

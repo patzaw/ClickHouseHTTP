@@ -1,12 +1,12 @@
 ###############################################################################@
 ## ClickHouseHTTPResult ----
-#' ClickHouseHTTP result class.
+#' ClickHouseHTTPResult class.
 #'
 #' @export
 #'
 setClass(
    "ClickHouseHTTPResult",
-   contains = "DBIResult",
+   contains="DBIResult",
    slots=list(
       sql="character",
       env="environment",
@@ -17,11 +17,7 @@ setClass(
 
 ###############################################################################@
 ## dbFetch ----
-#'
-#' @rdname ClickHouseHTTPResult-class
-#'
-#' @export
-#'
+##
 setMethod(
    "dbFetch", "ClickHouseHTTPResult",
    function(res, n=-1, ...){
@@ -39,10 +35,10 @@ setMethod(
          }
          if(res@format=="TabSeparatedWithNamesAndTypes"){
             l <- rawToChar(res@env$content)
-            ctypes <- read.delim(
+            ctypes <- utils::read.delim(
                text=l, header=TRUE, sep="\t", colClasses="character", nrows=1
             )
-            toRet <- read.delim(
+            toRet <- utils::read.delim(
                text=l, header=FALSE, sep="\t", colClasses="character", skip=2
             )
             colnames(toRet) <- colnames(ctypes)
@@ -56,6 +52,7 @@ setMethod(
 
 ###############################################################################@
 ## dbClearResult ----
+##
 setMethod("dbClearResult", "ClickHouseHTTPResult", function(res, ...){
    res@env$content <- NULL
    res@env$fetched <- TRUE
@@ -64,30 +61,35 @@ setMethod("dbClearResult", "ClickHouseHTTPResult", function(res, ...){
 
 ###############################################################################@
 ## dbHasCompleted ----
+##
 setMethod("dbHasCompleted", "ClickHouseHTTPResult", function(res, ...){
-   !is.null(res@env$fetched) && resj@env$fetched
+   !is.null(res@env$fetched) && res@env$fetched
 })
 
 ###############################################################################@
 ## dbIsValid ----
+##
 setMethod("dbIsValid", "ClickHouseHTTPResult", function(dbObj, ...){
    !is.null(dbObj@env$fetched) && !dbObj@env$fetched
 })
 
 ###############################################################################@
 ## dbGetStatement ----
+##
 setMethod("dbGetStatement", "ClickHouseHTTPResult", function(res, ...){
    res@sql
 })
 
 ###############################################################################@
 ## dbGetRowCount ----
+##
 setMethod("dbGetRowCount", "ClickHouseHTTPResult", function(res, ...){
    res@env$ch_summary$read_rows
 })
 
 ###############################################################################@
 ## dbGetRowsAffected ----
+##
 setMethod("dbGetRowsAffected", "ClickHouseHTTPResult", function(res, ...){
    res@env$ch_summary$written_rows
 })

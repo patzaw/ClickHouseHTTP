@@ -1,2 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^supp$
+^doc$
+^docs$
+^Meta$
+^LICENSE$
+^NEWS.html$
+^NEWS.md$
+^README.Rmd$
+^README.md$
