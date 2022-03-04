@@ -44,15 +44,15 @@ devtools::install_github("patzaw/ClickHouseHTTP")
 ### Connection
 
 ``` r
-library(ClickHouseHTTP)
+library(DBI)
 ## HTTP connection
 con <- dbConnect(
-   ClickHouseHTTP(), host="localhost",
+   ClickHouseHTTP::ClickHouseHTTP(), host="localhost",
    port=8123
 )
 ## HTTPS connection (without ssl peer verification)
 con <- dbConnect(
-   ClickHouseHTTP(), host="localhost",
+   ClickHouseHTTP::ClickHouseHTTP(), host="localhost",
    port=8443, https=TRUE, ssl_verifypeer=FALSE
 )
 ```
@@ -69,8 +69,8 @@ dbWriteTable(con, "mtcars", mtcars)
 ### Query the database
 
 ``` r
-carsFromDB <- DBI::dbReadTable(con, "mtcars")
-DBI::dbGetQuery(con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110")
+carsFromDB <- dbReadTable(con, "mtcars")
+dbGetQuery(con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110")
 ```
 
 By default, ClickHouseHTTP relies on the [Apache
@@ -83,7 +83,7 @@ this format: *TIME32*, *FIXED_SIZE_BINARY*, *JSON*, *UUID*, *ENUM*. The
 the *TabSeparatedWithNamesAndTypes* format.
 
 ``` r
-selCars <- DBI::dbGetQuery(
+selCars <- dbGetQuery(
    con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
    format="TabSeparatedWithNamesAndTypes"
 )
@@ -113,13 +113,13 @@ dbWriteTable(
    con, "swiss", swiss,
    engine="MergeTree() ORDER BY (Fertility, province)"
 )
-swissFromDB <- DBI::dbReadTable(con, "swiss")
+swissFromDB <- dbReadTable(con, "swiss")
 ```
 
 A table from another database can also be accessed as following:
 
 ``` r
-DBI::dbReadTable(con, DBI::SQL("default.mtcars"))
+dbReadTable(con, SQL("default.mtcars"))
 ```
 
 ## Setting up a ClickHouse database using docker
