@@ -25,7 +25,7 @@ setMethod(
          warning("Other values than -1 for n are not supported")
       }
       if(length(res@env$content)==0){
-         toRet <- NULL
+         toRet <- data.frame()
       }else{
          if(res@format=="Arrow"){
             toRet <- as.data.frame(.af_cast(
