@@ -60,6 +60,37 @@ setMethod("dbDisconnect", "ClickHouseHTTPConnection", function(conn, ...){
 #'
 #' @return A ClickHouseHTTPResult object
 #'
+#' @details Both format have their pros and cons:
+#'
+#' - **Arrow** (default):
+#'    - fast for long tables but slow for wide tables
+#'    - fast with Arry columns
+#'    - Date and DateTime columns are returned as UInt16 and UInt32
+#'    respectively: by default, ClickHouseHTTP interprete them as Date and
+#'    POSIXct columns but cannot make the difference with actual UInt16 and
+#'    UInt32
+#'
+#' - **TabSeparatedWithNamesAndTypes**:
+#'    - in general faster than Arrow
+#'    - fast for wide tables but slow for long tables
+#'    - slow with Array columns
+#'    - Special characters are not well interpreted. In such cases, the function
+#'    below could be useful.
+#'
+#' \preformatted{
+#'       .sp_ch_recov <- function(x){
+#'          stringi::stri_replace_all_regex(
+#'             x,
+#'             c(
+#'                "\\\\n", "\\\\t",  "\\\\r", "\\\\b",
+#'                "\\\\a", "\\\\f", "\\\\'",  "\\\\\\\\"
+#'             ),
+#'             c("\n", "\t", "\r", "\b", "\a", "\f", "'", "\\\\"),
+#'             vectorize_all=FALSE
+#'          )
+#'       }
+#' }
+#'
 #' @example supp/examples/global-example.R
 #'
 #' @seealso [ClickHouseHTTPResult-class]

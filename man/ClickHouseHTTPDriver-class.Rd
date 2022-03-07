@@ -21,7 +21,7 @@
 )
 }
 \arguments{
-\item{drv}{A driver object created by [ClickHouseHTTP()]}
+\item{drv}{A driver object created by \code{\link[=ClickHouseHTTP]{ClickHouseHTTP()}}}
 
 \item{host}{name of the database host (default: "localhost")}
 
@@ -42,9 +42,15 @@ HTTPS (default: TRUE)}
 
 \item{convert_uint}{a logical: if TRUE (default), UInt ClickHouse
 data types are converted in the following R classes:
-- UInt8 : logical
-- UInt16: Date
-- UInt32: POSIXct}
+\itemize{
+\item UInt8 : logical
+\item UInt16: Date
+(when using Arrow format
+in \link{dbSendQuery,ClickHouseHTTPConnection,character-method})
+\item UInt32: POSIXct
+(when using Arrow format
+in \link{dbSendQuery,ClickHouseHTTPConnection,character-method})
+}}
 
 \item{...}{Other parameters passed on to methods}
 }
@@ -125,5 +131,5 @@ dbReadTable(con, SQL("default.mtcars"))
 }
 }
 \seealso{
-[ClickHouseHTTPConnection-class]
+\linkS4class{ClickHouseHTTPConnection}
 }

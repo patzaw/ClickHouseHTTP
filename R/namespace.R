@@ -3,7 +3,7 @@
 #' @import httr
 #' @import arrow
 #'
-#' @importFrom utils URLencode read.delim
+#' @importFrom  data.table fread
 #' @importFrom jsonlite fromJSON
 #'
 NULL

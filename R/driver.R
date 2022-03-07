@@ -52,7 +52,11 @@ ClickHouseHTTP <- function(){
 #' data types are converted in the following R classes:
 #' - UInt8 : logical
 #' - UInt16: Date
+#' (when using Arrow format
+#' in [dbSendQuery,ClickHouseHTTPConnection,character-method])
 #' - UInt32: POSIXct
+#' (when using Arrow format
+#' in [dbSendQuery,ClickHouseHTTPConnection,character-method])
 #' @param ... Other parameters passed on to methods
 #'
 #' @return A ClickHouseHTTPConnection

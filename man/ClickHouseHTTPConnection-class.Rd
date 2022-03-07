@@ -41,7 +41,7 @@
 )
 }
 \arguments{
-\item{conn}{a ClickHouseHTTPConnection object created with [dbConnect()]}
+\item{conn}{a ClickHouseHTTPConnection object created with \code{\link[=dbConnect]{dbConnect()}}}
 
 \item{statement}{the SQL query statement}
 
@@ -60,15 +60,17 @@ Two formats are supported:
 \item{fields}{a character vector with the name of the fields and their
 ClickHouse type
 (e.g.
-`c("text_col String", "num_col Nullable(Float64)", "nul_col Array(Int32)")`
+\code{c("text_col String", "num_col Nullable(Float64)", "nul_col Array(Int32)")}
 )}
 
 \item{engine}{the ClickHouse table engine as described in ClickHouse
-[documentation](https://clickhouse.com/docs/en/engines/table-engines/).
+\href{https://clickhouse.com/docs/en/engines/table-engines/}{documentation}.
 Examples:
-- `"TinyLog"` (default)
-- `"MergeTree() ORDER BY (expr)"`
-(expr generally correspond to fields separated by ",")}
+\itemize{
+\item \code{"TinyLog"} (default)
+\item \code{"MergeTree() ORDER BY (expr)"}
+(expr generally correspond to fields separated by ",")
+}}
 
 \item{overwrite}{if TRUE and if a table with the same name exists,
 then it is deleted before creating the new one (default: FALSE)}
@@ -86,14 +88,16 @@ it exists (default: FALSE).}
 A ClickHouseHTTPResult object
 
 A list with the following elements:
-- name: "ClickHouseHTTPConnection"
-- db.version: the version of ClickHouse
-- uptime: ClickHouse uptime
-- dbname: the default database
-- username: user name
-- host: ClickHouse host
-- port: ClickHouse port
-- https: Is the connection using HTTPS protocol instead of HTTP
+\itemize{
+\item name: "ClickHouseHTTPConnection"
+\item db.version: the version of ClickHouse
+\item uptime: ClickHouse uptime
+\item dbname: the default database
+\item username: user name
+\item host: ClickHouse host
+\item port: ClickHouse port
+\item https: Is the connection using HTTPS protocol instead of HTTP
+}
 
 dbCreateTable() returns TRUE, invisibly.
 
@@ -109,6 +113,42 @@ Information about the ClickHouse database
 Create a table in ClickHouse
 
 Write a table in ClickHouse
+}
+\details{
+Both format have their pros and cons:
+\itemize{
+\item \strong{Arrow} (default):
+\itemize{
+\item fast for long tables but slow for wide tables
+\item fast with Arry columns
+\item Date and DateTime columns are returned as UInt16 and UInt32
+respectively: by default, ClickHouseHTTP interprete them as Date and
+POSIXct columns but cannot make the difference with actual UInt16 and
+UInt32
+}
+\item \strong{TabSeparatedWithNamesAndTypes}:
+\itemize{
+\item in general faster than Arrow
+\item fast for wide tables but slow for long tables
+\item slow with Array columns
+\item Special characters are not well interpreted. In such cases, the function
+below could be useful.
+}
+}
+
+\preformatted{
+      .sp_ch_recov <- function(x){
+         stringi::stri_replace_all_regex(
+            x,
+            c(
+               "\\\\n", "\\\\t",  "\\\\r", "\\\\b",
+               "\\\\a", "\\\\f", "\\\\'",  "\\\\\\\\"
+            ),
+            c("\n", "\t", "\r", "\b", "\a", "\f", "'", "\\\\"),
+            vectorize_all=FALSE
+         )
+      }
+}
 }
 \examples{
 \dontrun{
@@ -311,5 +351,5 @@ dbReadTable(con, SQL("default.mtcars"))
 }
 }
 \seealso{
-[ClickHouseHTTPResult-class]
+\linkS4class{ClickHouseHTTPResult}
 }

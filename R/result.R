@@ -34,13 +34,107 @@ setMethod(
             ))
          }
          if(res@format=="TabSeparatedWithNamesAndTypes"){
-            l <- rawToChar(res@env$content)
-            ctypes <- utils::read.delim(
-               text=l, header=TRUE, sep="\t", colClasses="character", nrows=1
-            )
-            toRet <- utils::read.delim(
-               text=l, header=FALSE, sep="\t", colClasses="character", skip=2
-            )
+
+            l <- try(rawToChar(res@env$content), silent=TRUE)
+            if(inherits(l, "try-error")){
+               tmpf <- tempfile()
+               on.exit(file.remove(tmpf))
+               writeBin(res@env$content, con=tmpf)
+            }else{
+               tmpf <- NA
+            }
+            if(is.na(tmpf)){
+               ctypes <- data.table::fread(
+                  text=l,
+                  header=TRUE, sep="\t", colClasses="character", nrows=1,
+                  stringsAsFactors=FALSE
+               )
+            }else{
+               ctypes <- data.table::fread(
+                  file=tmpf,
+                  header=TRUE, sep="\t", colClasses="character", nrows=1,
+                  stringsAsFactors=FALSE
+               )
+            }
+            chClasses <- as.character(t(ctypes))
+            chType <- sub("^.*[(]", "", sub("[)].*$", "", chClasses))
+            chArray <- grepl("Array[(].*[)]", chClasses)
+            rType <-
+               ifelse(
+                  grepl("DateTime", chType), "POSIXct",
+               ifelse(
+                  grepl("Date", chType), "Date",
+               ifelse(
+                  grepl("Float", chType), "numeric",
+               ifelse(
+                  grepl("Decimal", chType), "numeric",
+               ifelse(
+                  chType=="UInt8" & res@conn@convert_uint, "logical",
+               ifelse(
+                  grepl("Int64", chType), "integer64",
+               ifelse(
+                  grepl("String", chType), "character",
+               ifelse(
+                  grepl("UUID", chType), "character",
+               ifelse(
+                  grepl("Int", chType), "integer",
+                  NA
+               )))))))))
+            if(any(is.na(rType))){
+               ut <- unique(chType[which(is.na(rType))])
+               warning(sprintf(
+                  'Unsupported type(s): %s --> "character"', paste(ut, sep=", ")
+               ))
+               rType <- ifelse(is.na(rType), "character", rType)
+            }
+            if(is.na(tmpf)){
+               toRet <- try(data.table::fread(
+                  text=l,
+                  header=FALSE, sep="\t",
+                  colClasses=ifelse(chArray, "character", rType), skip=2,
+                  stringsAsFactors=FALSE, na.strings="\\N",
+                  logical01=TRUE
+               ), silent=TRUE)
+               if(inherits(toRet, "try-error")){
+                  if(length(grep("skip=2 but the input only has", toRet)) > 0){
+                     toRet <- try(data.table::fread(
+                        text=l,
+                        header=FALSE, sep="\t",
+                        colClasses=ifelse(chArray, "character", rType),
+                        nrow=0,
+                        stringsAsFactors=FALSE, na.strings="\\N",
+                        logical01=TRUE
+                     ), silent=TRUE)
+                  }else{
+                     stop(as.character(toRet))
+                  }
+               }
+            }else{
+               toRet <- try(data.table::fread(
+                  file=tmpf,
+                  header=FALSE, sep="\t",
+                  colClasses=ifelse(chArray, "character", rType), skip=2,
+                  stringsAsFactors=FALSE, na.strings="\\N",
+                  logical01=TRUE
+               ), silent=TRUE)
+               if(inherits(toRet, "try-error")){
+                  if(length(grep("skip=2 but the input only has", toRet)) > 0){
+                     toRet <- try(data.table::fread(
+                        file=tmpf,
+                        header=FALSE, sep="\t",
+                        colClasses=ifelse(chArray, "character", rType),
+                        nrow=0,
+                        stringsAsFactors=FALSE, na.strings="\\N",
+                        logical01=TRUE
+                     ), silent=TRUE)
+                  }else{
+                     stop(as.character(toRet))
+                  }
+               }
+            }
+            for(i in which(chArray)){
+               toRet[[i]] <- .split_txt_array(toRet[[i]], type=rType[i])
+            }
             colnames(toRet) <- colnames(ctypes)
             attr(toRet, "types") <- ctypes
          }
@@ -97,6 +191,7 @@ setMethod("dbGetRowsAffected", "ClickHouseHTTPResult", function(res, ...){
 ###############################################################################@
 ## Helpers ----
 
+### Arrow cast ----
 .at_cast <- function(at, convert_uint=TRUE){
    if(inherits(at, "ListType")){
       return(arrow::list_of(.at_cast(at$value_type)))
@@ -157,3 +252,19 @@ setMethod("dbGetRowsAffected", "ClickHouseHTTPResult", function(res, ...){
    return(af)
 }
 
+### Array from text ----
+.split_txt_array <- function(x, type){
+   y <- gsub("(^[[]|[]]$)", "", x)
+   y <- strsplit(y, split=ifelse(type=="character", "','", ","))
+   y <- lapply(y, function(z) sub("(^'|'$)", "", z))
+   if(type=="Date"){
+      y <- lapply(y, as.Date)
+   }
+   if(type=="POSIXct"){
+      y <- lapply(y, as.POSIXct)
+   }
+   if(!type %in% c("character", "Date", "POSIXct")){
+      y <- lapply(y, as, class=type)
+   }
+   return(y)
+}
