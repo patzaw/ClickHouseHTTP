@@ -2,7 +2,7 @@
 title: "README"
 output: 
   rmarkdown::github_document:
-    number_sections: true
+    number_sections: false
     toc: true
     toc_depth: 2
 editor_options: 

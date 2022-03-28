@@ -1,15 +1,15 @@
 README
 ================
 
--   [1 Installation](#installation)
-    -   [1.1 Dependencies](#dependencies)
-    -   [1.2 From github](#from-github)
--   [2 Documentation](#documentation)
-    -   [2.1 Usage](#usage)
-    -   [2.2 Setting up a ClickHouse database using
+-   [Installation](#installation)
+    -   [Dependencies](#dependencies)
+    -   [From github](#from-github)
+-   [Documentation](#documentation)
+    -   [Usage](#usage)
+    -   [Setting up a ClickHouse database using
         docker](#setting-up-a-clickhouse-database-using-docker)
--   [3 Alternatives](#alternatives)
--   [4 Acknowledgments](#acknowledgments)
+-   [Alternatives](#alternatives)
+-   [Acknowledgments](#acknowledgments)
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
 [![](http://cranlogs.r-pkg.org/badges/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
@@ -28,9 +28,9 @@ yet supported by RClickhouse).
 The ClickHouseHTTP R package is licensed under
 [GPL-3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-# 1 Installation
+# Installation
 
-## 1.1 Dependencies
+## Dependencies
 
 The following R packages available on CRAN are required:
 
@@ -44,17 +44,17 @@ The following R packages available on CRAN are required:
 -   [arrow](https://CRAN.R-project.org/package=arrow): Integration to
     ‘Apache’ ‘Arrow’
 
-## 1.2 From github
+## From github
 
 ``` r
 devtools::install_github("patzaw/ClickHouseHTTP")
 ```
 
-# 2 Documentation
+# Documentation
 
-## 2.1 Usage
+## Usage
 
-### 2.1.1 Connection
+### Connection
 
 ``` r
 library(DBI)
@@ -70,7 +70,7 @@ con <- dbConnect(
 )
 ```
 
-### 2.1.2 Write a table in the database
+### Write a table in the database
 
 ``` r
 library(dplyr)
@@ -79,7 +79,7 @@ mtcars <- as_tibble(mtcars, rownames="car")
 dbWriteTable(con, "mtcars", mtcars)
 ```
 
-### 2.1.3 Query the database
+### Query the database
 
 ``` r
 carsFromDB <- dbReadTable(con, "mtcars")
@@ -104,7 +104,7 @@ selCars <- dbGetQuery(
 attr(selCars, "type")
 ```
 
-### 2.1.4 Using alternative databases stored in ClickHouse
+### Using alternative databases stored in ClickHouse
 
 ``` r
 dbSendQuery(con, "CREATE DATABASE swiss")
@@ -135,9 +135,9 @@ A table from another database can also be accessed as following:
 dbReadTable(con, SQL("default.mtcars"))
 ```
 
-## 2.2 Setting up a ClickHouse database using docker
+## Setting up a ClickHouse database using docker
 
-### 2.2.1 Configuration
+### Configuration
 
 ``` sh
 CH_HOME=~/Documents/Projects/Test_CH
@@ -155,14 +155,14 @@ cp supp/ClickHouse-Conf-Files/users.xml ${CH_HOME}/conf/
 cp supp/ClickHouse-Conf-Files/config.xml ${CH_HOME}/conf/
 ```
 
-### 2.2.2 SSL certificate
+### SSL certificate
 
 ``` sh
 openssl req -subj "/CN=localhost" -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout ${CH_HOME}/conf/server.key -out ${CH_HOME}/conf/server.crt
 openssl dhparam -out ${CH_HOME}/conf/dhparam.pem 4096
 ```
 
-### 2.2.3 Container
+### Container
 
 The following ports are supported in the shared `config.xml` file:
 
@@ -190,7 +190,7 @@ docker run -d --name Test_CH \
     clickhouse/clickhouse-server:22.2.3.5
 ```
 
-# 3 Alternatives
+# Alternatives
 
 -   [RClickhouse](https://github.com/IMSMWU/RClickhouse) is another DBI
     backend for the ClickHouse database. It provides basic dplyr support
@@ -201,7 +201,7 @@ docker run -d --name Test_CH \
     DBI backend for the ClickHouse database relying on HTTP protocol. It
     provides SSL support but without peer verification for the moment.
 
-# 4 Acknowledgments
+# Acknowledgments
 
 This work was entirely supported by [UCB Pharma](https://www.ucb.com/)
 (Early Solutions department).
