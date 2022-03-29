@@ -120,9 +120,9 @@ Both format have their pros and cons:
 \item \strong{Arrow} (default):
 \itemize{
 \item fast for long tables but slow for wide tables
-\item fast with Arry columns
+\item fast with Array columns
 \item Date and DateTime columns are returned as UInt16 and UInt32
-respectively: by default, ClickHouseHTTP interprete them as Date and
+respectively: by default, ClickHouseHTTP interpret them as Date and
 POSIXct columns but cannot make the difference with actual UInt16 and
 UInt32
 }
@@ -132,7 +132,7 @@ UInt32
 \item fast for wide tables but slow for long tables
 \item slow with Array columns
 \item Special characters are not well interpreted. In such cases, the function
-below could be useful.
+below can be useful but can also take time.
 }
 }
 
