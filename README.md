@@ -30,6 +30,10 @@ The ClickHouseHTTP R package is licensed under
 
 # Installation
 
+``` r
+install.packages("ClickHouseHTTP")
+```
+
 ## Dependencies
 
 The following R packages available on CRAN are required:
