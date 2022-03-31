@@ -2,6 +2,7 @@ README
 ================
 
 -   [Installation](#installation)
+    -   [From CRAN](#from-cran)
     -   [Dependencies](#dependencies)
     -   [From github](#from-github)
 -   [Documentation](#documentation)
@@ -30,6 +31,8 @@ The ClickHouseHTTP R package is licensed under
 
 # Installation
 
+## From CRAN
+
 ``` r
 install.packages("ClickHouseHTTP")
 ```
@@ -47,6 +50,19 @@ The following R packages available on CRAN are required:
     and Robust JSON Parser and Generator for R
 -   [arrow](https://CRAN.R-project.org/package=arrow): Integration to
     ‘Apache’ ‘Arrow’
+-   [data.table](https://CRAN.R-project.org/package=data.table):
+    Extension of `data.frame`
+
+And those are suggested:
+
+-   [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
+    Package for Dynamic Report Generation in R
+-   [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic
+    Documents for R
+-   [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
+    Manipulation
+-   [stringi](https://CRAN.R-project.org/package=stringi): Character
+    String Processing Facilities
 
 ## From github
 

@@ -12,6 +12,7 @@ editor_options:
 ```{r setup, include = FALSE}
 library(knitr)
 library(ClickHouseHTTP)
+library(dplyr)
 cranRef <- function(x){
   sprintf(
     "[%s](https://CRAN.R-project.org/package=%s): %s",
@@ -39,6 +40,8 @@ The ClickHouseHTTP R package is licensed under
 
 # Installation
 
+## From CRAN
+
 ```{r, eval=FALSE}
 install.packages("ClickHouseHTTP")
 ```
@@ -47,11 +50,22 @@ install.packages("ClickHouseHTTP")
 
 The following R packages available on CRAN are required:
 
--   `r cranRef("methods")`
--   `r cranRef("DBI")`
--   `r cranRef("httr")`
--   `r cranRef("jsonlite")`
--   `r cranRef("arrow")`
+```{r, echo=FALSE, results='asis'}
+deps <- desc::desc_get_deps()
+sdeps <- filter(deps, type %in% c("Depends", "Imports") & package!="R")
+for(p in sdeps$package){
+   cat(paste("-", cranRef(p)), sep="\n")
+}
+```
+
+And those are suggested:
+
+```{r, echo=FALSE, results='asis'}
+wdeps <- filter(deps, type=="Suggests" & package!="R")
+for(p in wdeps$package){
+   cat(paste("-", cranRef(p)), sep="\n")
+}
+```
 
 ## From github
 
