@@ -1,7 +1,7 @@
 Package: ClickHouseHTTP
 Type: Package
 Title: A Simple HTTP Database Interface to 'ClickHouse'
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person(
         "Patrice", "Godard",

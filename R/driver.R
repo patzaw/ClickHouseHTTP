@@ -4,19 +4,19 @@
 #'
 #' @export
 #'
-setClass("ClickHouseHTTPDriver", contains = "DBIDriver")
+methods::setClass("ClickHouseHTTPDriver", contains = "DBIDriver")
 
 ###############################################################################@
 ## dbUnloadDrive ----
 ##
-setMethod("dbUnloadDriver", "ClickHouseHTTPDriver", function(drv, ...){
+methods::setMethod("dbUnloadDriver", "ClickHouseHTTPDriver", function(drv, ...){
    TRUE
 })
 
 ###############################################################################@
 ## show ----
 ##
-setMethod("show", "ClickHouseHTTPDriver", function(object){
+methods::setMethod("show", "ClickHouseHTTPDriver", function(object){
    cat("<ClickHouseHTTPDriver>\n")
 })
 
@@ -31,7 +31,7 @@ setMethod("show", "ClickHouseHTTPDriver", function(object){
 #' @export
 #'
 ClickHouseHTTP <- function(){
-   new("ClickHouseHTTPDriver")
+   methods::new("ClickHouseHTTPDriver")
 }
 
 ###############################################################################@
@@ -69,7 +69,7 @@ ClickHouseHTTP <- function(){
 #'
 #' @export
 #'
-setMethod(
+methods::setMethod(
    "dbConnect", "ClickHouseHTTPDriver",
    function(
       drv,
@@ -104,7 +104,7 @@ setMethod(
          paste(sample(c(letters, LETTERS), 10), collapse=""),
          sep=""
       )
-      toRet <- new(
+      toRet <- methods::new(
          "ClickHouseHTTPConnection",
          host=host,
          port=as.integer(port),
@@ -125,8 +125,8 @@ setMethod(
       }
 
       ## Set default db
-      dbSendQuery(toRet, sprintf("USE `%s`", dbname))
-      dbSendQuery(toRet, "SET send_progress_in_http_headers=1")
+      DBI::dbSendQuery(toRet, sprintf("USE `%s`", dbname))
+      DBI::dbSendQuery(toRet, "SET send_progress_in_http_headers=1")
 
       return(toRet)
    }
@@ -135,13 +135,15 @@ setMethod(
 ###############################################################################@
 ## dbDataType ----
 ##
-setMethod(
+methods::setMethod(
    "dbDataType", "ClickHouseHTTPDriver",
    function(dbObj, obj, ...){
       toRet <-
          ifelse(
             is.list(obj),
-            sprintf("Array(%s)", dbDataType(dbObj, unlist(obj, recursive=F))),
+            sprintf(
+               "Array(%s)", DBI::dbDataType(dbObj, unlist(obj, recursive=F))
+            ),
          ifelse(
             is.logical(obj), "UInt8",
          ifelse(

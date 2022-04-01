@@ -4,7 +4,7 @@
 #'
 #' @export
 #'
-setClass(
+methods::setClass(
    "ClickHouseHTTPResult",
    contains="DBIResult",
    slots=list(
@@ -18,7 +18,7 @@ setClass(
 ###############################################################################@
 ## dbFetch ----
 ##
-setMethod(
+methods::setMethod(
    "dbFetch", "ClickHouseHTTPResult",
    function(res, n=-1, ...){
       if(n!=-1){
@@ -147,7 +147,7 @@ setMethod(
 ###############################################################################@
 ## dbClearResult ----
 ##
-setMethod("dbClearResult", "ClickHouseHTTPResult", function(res, ...){
+methods::setMethod("dbClearResult", "ClickHouseHTTPResult", function(res, ...){
    res@env$content <- NULL
    res@env$fetched <- TRUE
    invisible(TRUE)
@@ -156,37 +156,40 @@ setMethod("dbClearResult", "ClickHouseHTTPResult", function(res, ...){
 ###############################################################################@
 ## dbHasCompleted ----
 ##
-setMethod("dbHasCompleted", "ClickHouseHTTPResult", function(res, ...){
+methods::setMethod("dbHasCompleted", "ClickHouseHTTPResult", function(res, ...){
    !is.null(res@env$fetched) && res@env$fetched
 })
 
 ###############################################################################@
 ## dbIsValid ----
 ##
-setMethod("dbIsValid", "ClickHouseHTTPResult", function(dbObj, ...){
+methods::setMethod("dbIsValid", "ClickHouseHTTPResult", function(dbObj, ...){
    !is.null(dbObj@env$fetched) && !dbObj@env$fetched
 })
 
 ###############################################################################@
 ## dbGetStatement ----
 ##
-setMethod("dbGetStatement", "ClickHouseHTTPResult", function(res, ...){
+methods::setMethod("dbGetStatement", "ClickHouseHTTPResult", function(res, ...){
    res@sql
 })
 
 ###############################################################################@
 ## dbGetRowCount ----
 ##
-setMethod("dbGetRowCount", "ClickHouseHTTPResult", function(res, ...){
+methods::setMethod("dbGetRowCount", "ClickHouseHTTPResult", function(res, ...){
    res@env$ch_summary$read_rows
 })
 
 ###############################################################################@
 ## dbGetRowsAffected ----
 ##
-setMethod("dbGetRowsAffected", "ClickHouseHTTPResult", function(res, ...){
-   res@env$ch_summary$written_rows
-})
+methods::setMethod(
+   "dbGetRowsAffected", "ClickHouseHTTPResult",
+   function(res, ...){
+      res@env$ch_summary$written_rows
+   }
+)
 
 ###############################################################################@
 ## Helpers ----

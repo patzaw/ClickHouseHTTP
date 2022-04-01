@@ -4,7 +4,7 @@
 #'
 #' @export
 #'
-setClass(
+methods::setClass(
    "ClickHouseHTTPConnection",
    contains="DBIConnection",
    slots=list(
@@ -22,29 +22,35 @@ setClass(
 ###############################################################################@
 ## dbIsValid ----
 ##
-setMethod("dbIsValid", "ClickHouseHTTPConnection", function(dbObj, ...){
-   toRet <- try(.check_db_session(dbObj), silent=TRUE)
-   if(inherits(toRet, "try-error")){
-      v <- FALSE
-      attr(v, "m") <- as.character(toRet)
-      toRet <- v
+methods::setMethod(
+   "dbIsValid", "ClickHouseHTTPConnection",
+   function(dbObj, ...){
+      toRet <- try(.check_db_session(dbObj), silent=TRUE)
+      if(inherits(toRet, "try-error")){
+         v <- FALSE
+         attr(v, "m") <- as.character(toRet)
+         toRet <- v
+      }
+      if(!toRet){
+         warning(attr(toRet, "m"))
+         toRet <- as.logical(toRet)
+      }
+      return(toRet)
    }
-   if(!toRet){
-      warning(attr(toRet, "m"))
-      toRet <- as.logical(toRet)
-   }
-   return(toRet)
-})
+)
 
 ###############################################################################@
 ## dbDisconnect ----
 ##
-setMethod("dbDisconnect", "ClickHouseHTTPConnection", function(conn, ...){
-   xn <- deparse(substitute(conn))
-   conn@session <- paste0(conn@session, "off")
-   assign(xn, conn, envir=parent.frame(n=1))
-   return(invisible(TRUE))
-})
+methods::setMethod(
+   "dbDisconnect", "ClickHouseHTTPConnection",
+   function(conn, ...){
+      xn <- deparse(substitute(conn))
+      conn@session <- paste0(conn@session, "off")
+      assign(xn, conn, envir=parent.frame(n=1))
+      return(invisible(TRUE))
+   }
+)
 
 ###############################################################################@
 ## dbSendQuery ----
@@ -99,7 +105,7 @@ setMethod("dbDisconnect", "ClickHouseHTTPConnection", function(conn, ...){
 #'
 #' @export
 #'
-setMethod(
+methods::setMethod(
    "dbSendQuery",
    c("ClickHouseHTTPConnection", "character"),
    function(
@@ -140,7 +146,7 @@ setMethod(
          as.numeric
       )
       resEnv$fetched <- FALSE
-      return(new(
+      return(methods::new(
          "ClickHouseHTTPResult",
          sql=statement,
          env=resEnv,
@@ -152,9 +158,9 @@ setMethod(
 ###############################################################################@
 ## show ----
 ##
-setMethod("show", "ClickHouseHTTPConnection", function(object){
+methods::setMethod("show", "ClickHouseHTTPConnection", function(object){
    cat("<ClickHouseHTTPConnection>\n")
-   if(dbIsValid(object)){
+   if(DBI::dbIsValid(object)){
       cat(sprintf(
          "   %s://%s@%s:%s\n",
          ifelse(object@https, "https", "http"),
@@ -185,40 +191,45 @@ setMethod("show", "ClickHouseHTTPConnection", function(object){
 #'
 #' @export
 #'
-setMethod("dbGetInfo", "ClickHouseHTTPConnection", function(dbObj, ...){
-   chinfo <- DBI::dbGetQuery(
-      dbObj,
-      paste(
-         "SELECT version() as version, uptime() as uptime",
-         ", currentDatabase() as database"
+methods::setMethod(
+   "dbGetInfo", "ClickHouseHTTPConnection",
+   function(dbObj, ...){
+      chinfo <- DBI::dbGetQuery(
+         dbObj,
+         paste(
+            "SELECT version() as version, uptime() as uptime",
+            ", currentDatabase() as database"
+         )
       )
-   )
-   return(list(
-      name="ClickHouseHTTPConnection",
-      db.version=chinfo$version,
-      uptime=chinfo$uptime,
-      dbname=chinfo$database,
-      username=dbObj@user,
-      host=dbObj@host,
-      port=dbObj@port,
-      https=dbObj@https
-   ))
-
-})
+      return(list(
+         name="ClickHouseHTTPConnection",
+         db.version=chinfo$version,
+         uptime=chinfo$uptime,
+         dbname=chinfo$database,
+         username=dbObj@user,
+         host=dbObj@host,
+         port=dbObj@port,
+         https=dbObj@https
+      ))
+   }
+)
 
 ###############################################################################@
 ## dbListTables ----
 ##
-setMethod("dbListTables", "ClickHouseHTTPConnection", function(conn, ...){
-   return(as.character(DBI::dbGetQuery(conn, "SHOW TABLES")[[1]]))
-})
+methods::setMethod(
+   "dbListTables", "ClickHouseHTTPConnection",
+   function(conn, ...){
+      return(as.character(DBI::dbGetQuery(conn, "SHOW TABLES")[[1]]))
+   }
+)
 
 ###############################################################################@
 ## dbDataType ----
 ##
-setMethod(
+methods::setMethod(
    "dbDataType", "ClickHouseHTTPConnection", function(dbObj, obj, ...){
-      return(dbDataType(ClickHouseHTTP(), obj))
+      return(DBI::dbDataType(ClickHouseHTTP(), obj))
    },
    valueClass="character"
 )
@@ -226,7 +237,7 @@ setMethod(
 ###############################################################################@
 ## dbQuoteIdentifier.character ----
 ##
-setMethod(
+methods::setMethod(
    "dbQuoteIdentifier", c("ClickHouseHTTPConnection", "character"),
     function(conn, x, ...){
        if(anyNA(x)){
@@ -242,7 +253,7 @@ setMethod(
 ###############################################################################@
 ## dbQuoteIdentifier.SQL ----
 ##
-setMethod(
+methods::setMethod(
    "dbQuoteIdentifier", c("ClickHouseHTTPConnection", "SQL"),
    function(conn, x, ...){
       return(x)
@@ -252,7 +263,7 @@ setMethod(
 ###############################################################################@
 ## dbQuoteString.character ----
 ##
-setMethod(
+methods::setMethod(
    "dbQuoteString", c("ClickHouseHTTPConnection", "character"),
    function(conn, x, ...){
       x <- gsub('\\', '\\\\', x, fixed=TRUE)
@@ -264,7 +275,7 @@ setMethod(
 ###############################################################################@
 ## dbQuoteString.SQL ----
 ##
-setMethod(
+methods::setMethod(
    "dbQuoteString", c("ClickHouseHTTPConnection", "SQL"),
    function(conn, x, ...){
       return(x)
@@ -274,10 +285,10 @@ setMethod(
 ###############################################################################@
 ## dbExistsTable ----
 ##
-setMethod(
+methods::setMethod(
    "dbExistsTable", c("ClickHouseHTTPConnection", "character"),
    function(conn, name, ...){
-      qname <- dbQuoteIdentifier(conn, name)
+      qname <- DBI::dbQuoteIdentifier(conn, name)
       return(DBI::dbGetQuery(conn, paste("EXISTS", qname))[[1]])
    }
 )
@@ -285,10 +296,10 @@ setMethod(
 ###############################################################################@
 ## dbReadTable ----
 ##
-setMethod(
+methods::setMethod(
    "dbReadTable", c("ClickHouseHTTPConnection", "character"),
    function(conn, name,...){
-      qname <- dbQuoteIdentifier(conn, name)
+      qname <- DBI::dbQuoteIdentifier(conn, name)
       ## Identify UUID columns for converting them in String
       coltype <- DBI::dbGetQuery(
          conn,
@@ -301,10 +312,10 @@ setMethod(
                coltype$type=="UUID",
                sprintf(
                   "toString(%s) as %s",
-                  dbQuoteIdentifier(conn, coltype$name),
-                  dbQuoteIdentifier(conn, coltype$name)
+                  DBI::dbQuoteIdentifier(conn, coltype$name),
+                  DBI::dbQuoteIdentifier(conn, coltype$name)
                ),
-               dbQuoteIdentifier(conn, coltype$name)
+               DBI::dbQuoteIdentifier(conn, coltype$name)
             ), collapse=", ")
          )
       }else{
@@ -321,21 +332,21 @@ setMethod(
 ###############################################################################@
 ## dbListFields ----
 ##
-setMethod(
+methods::setMethod(
    "dbListFields", c("ClickHouseHTTPConnection", "character"),
    function(conn, name, ...){
-   qname <- dbQuoteIdentifier(conn, name)
+   qname <- DBI::dbQuoteIdentifier(conn, name)
    return(DBI::dbGetQuery(conn, paste("DESCRIBE TABLE", qname))$name)
 })
 
 ###############################################################################@
 ## dbRemoveTable ----
 ##
-setMethod(
+methods::setMethod(
    "dbRemoveTable", "ClickHouseHTTPConnection",
    function(conn, name, ...){
-      qname <- dbQuoteIdentifier(conn, name)
-      dbSendQuery(conn, paste0("DROP TABLE ", qname))
+      qname <- DBI::dbQuoteIdentifier(conn, name)
+      DBI::dbSendQuery(conn, paste0("DROP TABLE ", qname))
       return(invisible(TRUE))
    }
 )
@@ -371,15 +382,15 @@ setMethod(
 #'
 #' @export
 #'
-setMethod(
+methods::setMethod(
    "dbCreateTable", "ClickHouseHTTPConnection",
    function(
       conn, name, fields, engine="TinyLog",
       overwrite=FALSE, ..., row.names=NULL, temporary=FALSE
    ){
-      qname <- dbQuoteIdentifier(conn, name)
-      if(overwrite && dbExistsTable(conn, qname)){
-         dbRemoveTable(conn, qname)
+      qname <- DBI::dbQuoteIdentifier(conn, name)
+      if(overwrite && DBI::dbExistsTable(conn, qname)){
+         DBI::dbRemoveTable(conn, qname)
       }
 
       query <- paste(
@@ -391,7 +402,7 @@ setMethod(
          ") ENGINE =", engine
       )
 
-      dbSendQuery(conn, query)
+      DBI::dbSendQuery(conn, query)
       return(invisible(TRUE))
    }
 )
@@ -399,18 +410,18 @@ setMethod(
 ###############################################################################@
 ## dbAppendTable ----
 ##
-setMethod(
+methods::setMethod(
    "dbAppendTable", "ClickHouseHTTPConnection",
    function(
       conn, name, value, ..., row.names=NULL
    ){
-      qname <- dbQuoteIdentifier(conn, name)
+      qname <- DBI::dbQuoteIdentifier(conn, name)
       tmpf <- tempfile()
       on.exit(file.remove(tmpf))
       arrow::write_feather(value, tmpf)
       query <- sprintf("INSERT INTO %s FORMAT Arrow", qname)
-      res <- dbSendQuery(conn=conn, statement=query, file=tmpf)
-      return(invisible(dbGetRowsAffected(res)))
+      res <- DBI::dbSendQuery(conn=conn, statement=query, file=tmpf)
+      return(invisible(DBI::dbGetRowsAffected(res)))
    }
 )
 
@@ -441,7 +452,7 @@ setMethod(
 #'
 #' @export
 #'
-setMethod(
+methods::setMethod(
    "dbWriteTable", "ClickHouseHTTPConnection",
    function(
       conn, name, value,
@@ -452,24 +463,24 @@ setMethod(
       if(overwrite && append){
          stop("overwrite and append cannot be both TRUE")
       }
-      qname <- dbQuoteIdentifier(conn, name)
+      qname <- DBI::dbQuoteIdentifier(conn, name)
       if(!append){
          cdef <- unlist(lapply(
             value, function(x){
-               type <- dbDataType(conn, x)
+               type <- DBI::dbDataType(conn, x)
                if(any(is.na(x))){
                   type <- sprintf("Nullable(%s)", type)
                }
                return(type)
             }
          ))
-         fields <- paste(dbQuoteIdentifier(conn, names(cdef)), cdef)
-         dbCreateTable(
+         fields <- paste(DBI::dbQuoteIdentifier(conn, names(cdef)), cdef)
+         DBI::dbCreateTable(
             conn=conn, name=name, fields=fields,
             engine=engine, overwrite=overwrite
          )
       }
-      toRet <- dbAppendTable(conn=conn, name=name, value=value)
+      toRet <- DBI::dbAppendTable(conn=conn, name=name, value=value)
       return(invisible(toRet))
    }
 )
@@ -514,11 +525,11 @@ setMethod(
          query=query
       ),
       body=qbody,
-      add_headers(
+      httr::add_headers(
          'X-ClickHouse-User'=dbc@user,
          'X-ClickHouse-Key'=dbc@password()
       ),
-      config=config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer))
+      config=httr::config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer))
    )
 }
 
