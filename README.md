@@ -1,16 +1,17 @@
 README
 ================
 
--   [Installation](#installation)
-    -   [From CRAN](#from-cran)
-    -   [Dependencies](#dependencies)
-    -   [From github](#from-github)
--   [Documentation](#documentation)
-    -   [Usage](#usage)
-    -   [Setting up a ClickHouse database using
-        docker](#setting-up-a-clickhouse-database-using-docker)
--   [Alternatives](#alternatives)
--   [Acknowledgments](#acknowledgments)
+-   <a href="#installation" id="toc-installation">Installation</a>
+    -   <a href="#from-cran" id="toc-from-cran">From CRAN</a>
+    -   <a href="#dependencies" id="toc-dependencies">Dependencies</a>
+    -   <a href="#from-github" id="toc-from-github">From github</a>
+-   <a href="#documentation" id="toc-documentation">Documentation</a>
+    -   <a href="#usage" id="toc-usage">Usage</a>
+    -   <a href="#setting-up-a-clickhouse-database-using-docker"
+        id="toc-setting-up-a-clickhouse-database-using-docker">Setting up a
+        ClickHouse database using docker</a>
+-   <a href="#alternatives" id="toc-alternatives">Alternatives</a>
+-   <a href="#acknowledgments" id="toc-acknowledgments">Acknowledgments</a>
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
 [![](http://cranlogs.r-pkg.org/badges/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
@@ -61,8 +62,8 @@ And those are suggested:
     Documents for R
 -   [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
     Manipulation
--   [stringi](https://CRAN.R-project.org/package=stringi): Character
-    String Processing Facilities
+-   [stringi](https://CRAN.R-project.org/package=stringi): Fast and
+    Portable Character String Processing Facilities
 
 ## From github
 

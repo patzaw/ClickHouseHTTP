@@ -47,13 +47,13 @@ methods::setMethod(
                ctypes <- data.table::fread(
                   text=l,
                   header=TRUE, sep="\t", colClasses="character", nrows=1,
-                  stringsAsFactors=FALSE
+                  stringsAsFactors=FALSE, quote=""
                )
             }else{
                ctypes <- data.table::fread(
                   file=tmpf,
                   header=TRUE, sep="\t", colClasses="character", nrows=1,
-                  stringsAsFactors=FALSE
+                  stringsAsFactors=FALSE, quote=""
                )
             }
             chClasses <- as.character(t(ctypes))
@@ -93,7 +93,7 @@ methods::setMethod(
                   header=FALSE, sep="\t",
                   colClasses=ifelse(chArray, "character", rType), skip=2,
                   stringsAsFactors=FALSE, na.strings="\\N",
-                  logical01=TRUE
+                  logical01=TRUE, quote=""
                ), silent=TRUE)
                if(inherits(toRet, "try-error")){
                   if(length(grep("skip=2 but the input only has", toRet)) > 0){
@@ -103,7 +103,7 @@ methods::setMethod(
                         colClasses=ifelse(chArray, "character", rType),
                         nrow=0,
                         stringsAsFactors=FALSE, na.strings="\\N",
-                        logical01=TRUE
+                        logical01=TRUE, quote=""
                      ), silent=TRUE)
                   }else{
                      stop(as.character(toRet))
@@ -115,7 +115,7 @@ methods::setMethod(
                   header=FALSE, sep="\t",
                   colClasses=ifelse(chArray, "character", rType), skip=2,
                   stringsAsFactors=FALSE, na.strings="\\N",
-                  logical01=TRUE
+                  logical01=TRUE, quote=""
                ), silent=TRUE)
                if(inherits(toRet, "try-error")){
                   if(length(grep("skip=2 but the input only has", toRet)) > 0){
@@ -125,7 +125,7 @@ methods::setMethod(
                         colClasses=ifelse(chArray, "character", rType),
                         nrow=0,
                         stringsAsFactors=FALSE, na.strings="\\N",
-                        logical01=TRUE
+                        logical01=TRUE, quote=""
                      ), silent=TRUE)
                   }else{
                      stop(as.character(toRet))
