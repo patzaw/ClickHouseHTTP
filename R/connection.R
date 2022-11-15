@@ -15,7 +15,8 @@ methods::setClass(
       https="logical",
       ssl_verifypeer="logical",
       session="character",
-      convert_uint="logical"
+      convert_uint="logical",
+      headers="list"
    )
 )
 
@@ -525,9 +526,11 @@ methods::setMethod(
          query=query
       ),
       body=qbody,
-      httr::add_headers(
-         'X-ClickHouse-User'=dbc@user,
-         'X-ClickHouse-Key'=dbc@password()
+      httr::add_headers(.headers = c(c(
+            'X-ClickHouse-User'=dbc@user,
+            'X-ClickHouse-Key'=dbc@password()),
+            dbc@headers
+         )
       ),
       config=httr::config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer))
    )

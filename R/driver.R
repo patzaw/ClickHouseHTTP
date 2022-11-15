@@ -57,6 +57,8 @@ ClickHouseHTTP <- function(){
 #' - UInt32: POSIXct
 #' (when using Arrow format
 #' in [dbSendQuery,ClickHouseHTTPConnection,character-method])
+#' @param headers a named list with other HTTP headers.
+#' (for example: `headers = list("X-Authorization" = "Bearer <token>")`)
 #' @param ... Other parameters passed on to methods
 #'
 #' @return A ClickHouseHTTPConnection
@@ -82,6 +84,7 @@ methods::setMethod(
       ssl_verifypeer=TRUE,
       session_timeout=3600L,
       convert_uint=TRUE,
+      headers = list(),
       ...
    ){
       stopifnot(
@@ -97,7 +100,8 @@ methods::setMethod(
          is.numeric(session_timeout), length(session_timeout)==1,
          !is.na(session_timeout),
          is.logical(convert_uint), length(convert_uint)==1,
-         !is.na(convert_uint)
+         !is.na(convert_uint),
+         !is.null(headers)
       )
       session <- paste(
          format(Sys.time(), format="%Y%m%d%H%M%S"),
@@ -115,7 +119,8 @@ methods::setMethod(
          https=https,
          ssl_verifypeer=ssl_verifypeer,
          session=session,
-         convert_uint=convert_uint
+         convert_uint=convert_uint,
+         headers=headers
       )
 
       ## Check connection
