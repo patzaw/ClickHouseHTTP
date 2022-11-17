@@ -525,6 +525,7 @@ methods::setMethod(
             'X-ClickHouse-Key'=dbc@password()),
             dbc@extended_headers
          )
+   print(qheaders)
    httr::POST(
       url=.build_http_req(
          host=dbc@host, port=dbc@port, https=dbc@https,
