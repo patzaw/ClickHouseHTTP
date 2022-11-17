@@ -539,7 +539,7 @@ methods::setMethod(
          query=query
       ),
       body=qbody,
-      httr::add_headers(.headers = qheaders),
+      httr::add_headers(paste(qheaders, sep=",")),
       config=httr::config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer))
    )
 }
