@@ -530,7 +530,7 @@ methods::setMethod(
    if (!is.null(dbc@extended_headers) && !is.na(dbc@extended_headers) && length(dbc@extended_headers) > 0)
       qheaders <- c(qheaders, dbc@extended_headers)
       
-   print(paste(qheaders, sep=","))
+   print(qheaders)
 
    httr::POST(
       url=.build_http_req(
@@ -539,7 +539,7 @@ methods::setMethod(
          query=query
       ),
       body=qbody,
-      httr::add_headers(paste(qheaders, sep=",")),
+      httr::add_headers(qheaders),
       config=httr::config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer))
    )
 }
