@@ -529,7 +529,9 @@ methods::setMethod(
    # Add other headers
    if (!is.null(dbc@extended_headers) && !is.na(dbc@extended_headers) && length(dbc@extended_headers) > 0)
       qheaders <- c(qheaders, c(dbc@extended_headers))
-      
+   
+   print(class(dbc@extended_headers))
+   print(dbc@extended_headers)
    print(qheaders)
 
    httr::POST(
