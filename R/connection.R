@@ -521,17 +521,15 @@ methods::setMethod(
    }
 
    # Add authentication headers
-   qheaders <- c(
+   qheaders <- list(
             'X-ClickHouse-User'=dbc@user,
             'X-ClickHouse-Key'=dbc@password()
          )
 
    # Add other headers
    if (!is.null(dbc@extended_headers) && !is.na(dbc@extended_headers) && length(dbc@extended_headers) > 0)
-      qheaders <- c(qheaders, c(dbc@extended_headers))
+      qheaders <- c(qheaders, dbc@extended_headers)
    
-   print(qheaders)
-
    httr::POST(
       url=.build_http_req(
          host=dbc@host, port=dbc@port, https=dbc@https,
