@@ -520,9 +520,9 @@ methods::setMethod(
       query <- utils::URLencode(query)
    }
 
-   qheaders <- c(list(
+   qheaders <- c(
             'X-ClickHouse-User'=dbc@user,
-            'X-ClickHouse-Key'=dbc@password()),
+            'X-ClickHouse-Key'=dbc@password(),
             dbc@extended_headers
          )
    print(qheaders)
