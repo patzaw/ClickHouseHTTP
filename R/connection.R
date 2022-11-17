@@ -521,7 +521,9 @@ methods::setMethod(
    }
 
    qheaders <- c(
-            
+            'X-ClickHouse-User'=dbc@user,
+            'X-ClickHouse-Key'=dbc@password(),
+            dbc@extended_headers
          )
    print(qheaders)
    httr::POST(
@@ -531,9 +533,7 @@ methods::setMethod(
          query=query
       ),
       body=qbody,
-      httr::add_headers(
-            'X-ClickHouse-User'=dbc@user,
-            'X-ClickHouse-Key'=dbc@password()),
+      httr::add_headers(.headers = qheaders),
       config=httr::config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer))
    )
 }
