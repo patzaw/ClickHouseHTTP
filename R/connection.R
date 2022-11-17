@@ -16,7 +16,7 @@ methods::setClass(
       ssl_verifypeer="logical",
       session="character",
       convert_uint="logical",
-      headers="list"
+      extended_headers="list"
    )
 )
 
@@ -519,6 +519,12 @@ methods::setMethod(
       qbody <- httr::upload_file(file)
       query <- utils::URLencode(query)
    }
+
+   qheaders <- c(list(
+            'X-ClickHouse-User'=dbc@user,
+            'X-ClickHouse-Key'=dbc@password()),
+            dbc@extended_headers
+         )
    httr::POST(
       url=.build_http_req(
          host=dbc@host, port=dbc@port, https=dbc@https,
@@ -526,12 +532,7 @@ methods::setMethod(
          query=query
       ),
       body=qbody,
-      httr::add_headers(.headers = c(c(
-            'X-ClickHouse-User'=dbc@user,
-            'X-ClickHouse-Key'=dbc@password()),
-            dbc@headers
-         )
-      ),
+      httr::add_headers(.headers = qheaders),
       config=httr::config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer))
    )
 }

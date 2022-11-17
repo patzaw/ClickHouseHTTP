@@ -84,7 +84,7 @@ methods::setMethod(
       ssl_verifypeer=TRUE,
       session_timeout=3600L,
       convert_uint=TRUE,
-      headers = list(),
+      extended_headers = list(),
       ...
    ){
       stopifnot(
@@ -101,7 +101,7 @@ methods::setMethod(
          !is.na(session_timeout),
          is.logical(convert_uint), length(convert_uint)==1,
          !is.na(convert_uint),
-         !is.null(headers)
+         !is.null(extended_headers)
       )
       session <- paste(
          format(Sys.time(), format="%Y%m%d%H%M%S"),
@@ -120,7 +120,7 @@ methods::setMethod(
          ssl_verifypeer=ssl_verifypeer,
          session=session,
          convert_uint=convert_uint,
-         headers=headers
+         extended_headers=extended_headers
       )
 
       ## Check connection
