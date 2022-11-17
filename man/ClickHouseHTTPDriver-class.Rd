@@ -52,6 +52,7 @@ in \link{dbSendQuery,ClickHouseHTTPConnection,character-method})
 in \link{dbSendQuery,ClickHouseHTTPConnection,character-method})
 }}
 
+\item{extended_headers}{Other headers as named list}
 \item{...}{Other parameters passed on to methods}
 }
 \value{

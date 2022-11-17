@@ -57,8 +57,8 @@ ClickHouseHTTP <- function(){
 #' - UInt32: POSIXct
 #' (when using Arrow format
 #' in [dbSendQuery,ClickHouseHTTPConnection,character-method])
-#' @param headers a named list with other HTTP headers.
-#' (for example: `headers = list("X-Authorization" = "Bearer <token>")`)
+#' @param extended_headers a named list with other HTTP headers.
+#' (for example: `extended_headers = list("X-Authorization" = "Bearer <token>")`)
 #' @param ... Other parameters passed on to methods
 #'
 #' @return A ClickHouseHTTPConnection
