@@ -522,8 +522,7 @@ methods::setMethod(
 
    qheaders <- c(
             'X-ClickHouse-User'=dbc@user,
-            'X-ClickHouse-Key'=dbc@password(),
-            dbc@extended_headers
+            'X-ClickHouse-Key'=dbc@password()
          )
    print(qheaders)
    httr::POST(
