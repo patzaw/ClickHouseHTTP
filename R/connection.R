@@ -528,7 +528,7 @@ methods::setMethod(
 
    # Add other headers
    if (!is.null(dbc@extended_headers) && !is.na(dbc@extended_headers) && length(dbc@extended_headers) > 0)
-      qheaders <- c(qheaders, dbc@extended_headers)
+      qheaders <- c(qheaders, c(dbc@extended_headers))
       
    print(qheaders)
 
