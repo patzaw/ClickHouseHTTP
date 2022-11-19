@@ -1,17 +1,17 @@
 README
 ================
 
--   <a href="#installation" id="toc-installation">Installation</a>
-    -   <a href="#from-cran" id="toc-from-cran">From CRAN</a>
-    -   <a href="#dependencies" id="toc-dependencies">Dependencies</a>
-    -   <a href="#from-github" id="toc-from-github">From github</a>
--   <a href="#documentation" id="toc-documentation">Documentation</a>
-    -   <a href="#usage" id="toc-usage">Usage</a>
-    -   <a href="#setting-up-a-clickhouse-database-using-docker"
-        id="toc-setting-up-a-clickhouse-database-using-docker">Setting up a
-        ClickHouse database using docker</a>
--   <a href="#alternatives" id="toc-alternatives">Alternatives</a>
--   <a href="#acknowledgments" id="toc-acknowledgments">Acknowledgments</a>
+- <a href="#installation" id="toc-installation">Installation</a>
+  - <a href="#from-cran" id="toc-from-cran">From CRAN</a>
+  - <a href="#dependencies" id="toc-dependencies">Dependencies</a>
+  - <a href="#from-github" id="toc-from-github">From github</a>
+- <a href="#documentation" id="toc-documentation">Documentation</a>
+  - <a href="#usage" id="toc-usage">Usage</a>
+  - <a href="#setting-up-a-clickhouse-database-using-docker"
+    id="toc-setting-up-a-clickhouse-database-using-docker">Setting up a
+    ClickHouse database using docker</a>
+- <a href="#alternatives" id="toc-alternatives">Alternatives</a>
+- <a href="#acknowledgments" id="toc-acknowledgments">Acknowledgments</a>
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
 [![](http://cranlogs.r-pkg.org/badges/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
@@ -42,28 +42,28 @@ install.packages("ClickHouseHTTP")
 
 The following R packages available on CRAN are required:
 
--   [methods](https://CRAN.R-project.org/package=methods): Formal
-    Methods and Classes
--   [DBI](https://CRAN.R-project.org/package=DBI): R Database Interface
--   [httr](https://CRAN.R-project.org/package=httr): Tools for Working
-    with URLs and HTTP
--   [jsonlite](https://CRAN.R-project.org/package=jsonlite): A Simple
-    and Robust JSON Parser and Generator for R
--   [arrow](https://CRAN.R-project.org/package=arrow): Integration to
-    ‘Apache’ ‘Arrow’
--   [data.table](https://CRAN.R-project.org/package=data.table):
-    Extension of `data.frame`
+- [methods](https://CRAN.R-project.org/package=methods): Formal Methods
+  and Classes
+- [DBI](https://CRAN.R-project.org/package=DBI): R Database Interface
+- [httr](https://CRAN.R-project.org/package=httr): Tools for Working
+  with URLs and HTTP
+- [jsonlite](https://CRAN.R-project.org/package=jsonlite): A Simple and
+  Robust JSON Parser and Generator for R
+- [arrow](https://CRAN.R-project.org/package=arrow): Integration to
+  ‘Apache’ ‘Arrow’
+- [data.table](https://CRAN.R-project.org/package=data.table): Extension
+  of `data.frame`
 
 And those are suggested:
 
--   [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
-    Package for Dynamic Report Generation in R
--   [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic
-    Documents for R
--   [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
-    Manipulation
--   [stringi](https://CRAN.R-project.org/package=stringi): Fast and
-    Portable Character String Processing Facilities
+- [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
+  Package for Dynamic Report Generation in R
+- [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic
+  Documents for R
+- [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
+  Manipulation
+- [stringi](https://CRAN.R-project.org/package=stringi): Fast and
+  Portable Character String Processing Facilities
 
 ## From github
 
@@ -187,11 +187,10 @@ openssl dhparam -out ${CH_HOME}/conf/dhparam.pem 4096
 
 The following ports are supported in the shared `config.xml` file:
 
--   9000: Native TCP interface (not used by ClickHouseHTTP)
--   9440: Native TCP interface wrapped in TLS (not used by
-    ClickHouseHTTP)
--   8123: HTTP interface
--   8443: HTTPS interface
+- 9000: Native TCP interface (not used by ClickHouseHTTP)
+- 9440: Native TCP interface wrapped in TLS (not used by ClickHouseHTTP)
+- 8123: HTTP interface
+- 8443: HTTPS interface
 
 ``` sh
 chmod -R a+rwx ${CH_HOME}
@@ -213,14 +212,14 @@ docker run -d --name Test_CH \
 
 # Alternatives
 
--   [RClickhouse](https://github.com/IMSMWU/RClickhouse) is another DBI
-    backend for the ClickHouse database. It provides basic dplyr support
-    by auto-generating SQL-commands using dbplyr and is based on this
-    [C++ Clickhouse Client](https://github.com/artpaul/clickhouse-cpp).
+- [RClickhouse](https://github.com/IMSMWU/RClickhouse) is another DBI
+  backend for the ClickHouse database. It provides basic dplyr support
+  by auto-generating SQL-commands using dbplyr and is based on this [C++
+  Clickhouse Client](https://github.com/artpaul/clickhouse-cpp).
 
--   [clickhouse-r](https://github.com/hannes/clickhouse-r) is another
-    DBI backend for the ClickHouse database relying on HTTP protocol. It
-    provides SSL support but without peer verification for the moment.
+- [clickhouse-r](https://github.com/hannes/clickhouse-r) is another DBI
+  backend for the ClickHouse database relying on HTTP protocol. It
+  provides SSL support but without peer verification for the moment.
 
 # Acknowledgments
 
