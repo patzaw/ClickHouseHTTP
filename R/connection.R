@@ -14,7 +14,7 @@ methods::setClass(
       password="function",
       https="logical",
       ssl_verifypeer="logical",
-      endpoint="character",
+      host_path="character",
       session="character",
       convert_uint="logical"
    )
@@ -490,7 +490,7 @@ methods::setMethod(
 ## Helpers ----
 
 .build_http_req <- function(
-   host, port, https, endpoint,
+   host, port, https, host_path,
    session, session_timeout=NA,
    query=""
 ){
@@ -498,7 +498,7 @@ methods::setMethod(
       "%s://%s:%s/%s?session_id=%s&session_check=%s%s&query=%s",
       ifelse(https, "https", "http"),
       host, port,
-      ifelse(is.na(endpoint), "", paste0(endpoint, "/")),
+      ifelse(is.na(host_path), "", paste0(host_path, "/")),
       session, as.integer(is.na(session_timeout)),
       ifelse(
          is.na(session_timeout), "",
@@ -524,7 +524,7 @@ methods::setMethod(
    httr::POST(
       url=.build_http_req(
          host=dbc@host, port=dbc@port, https=dbc@https,
-         endpoint=dbc@endpoint,
+         host_path=dbc@host_path,
          session=dbc@session, session_timeout=session_timeout,
          query=query
       ),

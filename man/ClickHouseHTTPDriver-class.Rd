@@ -15,7 +15,7 @@
   password = "",
   https = FALSE,
   ssl_verifypeer = TRUE,
-  endpoint = NA,
+  host_path = NA,
   session_timeout = 3600L,
   convert_uint = TRUE,
   ...
@@ -39,8 +39,8 @@
 \item{ssl_verifypeer}{a logical to verify SSL certificate when using
 HTTPS (default: TRUE)}
 
-\item{endpoint}{a path to use on host (e.g. "ClickHouse/"):
-it allows to connect on server behind a reverse proxy}
+\item{host_path}{a path to use on host (e.g. "ClickHouse/"):
+it allows to connect on a server behind a reverse proxy for example}
 
 \item{session_timeout}{timeout in seconds (default: 3600L seconds)}
 

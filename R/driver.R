@@ -47,8 +47,8 @@ ClickHouseHTTP <- function(){
 #' @param https a logical to use the HTTPS protocol (default: FALSE)
 #' @param ssl_verifypeer a logical to verify SSL certificate when using
 #' HTTPS (default: TRUE)
-#' @param endpoint a path to use on host (e.g. "ClickHouse/"):
-#' it allows to connect on server behind a reverse proxy
+#' @param host_path a path to use on host (e.g. "ClickHouse/"):
+#' it allows to connect on a server behind a reverse proxy for example
 #' @param session_timeout timeout in seconds (default: 3600L seconds)
 #' @param convert_uint a logical: if TRUE (default), UInt ClickHouse
 #' data types are converted in the following R classes:
@@ -82,12 +82,12 @@ methods::setMethod(
       password="",
       https=FALSE,
       ssl_verifypeer=TRUE,
-      endpoint=NA,
+      host_path=NA,
       session_timeout=3600L,
       convert_uint=TRUE,
       ...
    ){
-      endpoint <- as.character(endpoint)
+      host_path <- as.character(host_path)
       stopifnot(
          is.character(host), length(host)==1, !is.na(host),
          is.numeric(port), length(port)==1, !is.na(port),
@@ -98,7 +98,7 @@ methods::setMethod(
          is.logical(https), length(https)==1, !is.na(https),
          is.logical(ssl_verifypeer), length(ssl_verifypeer)==1,
          !is.na(ssl_verifypeer),
-         length(endpoint)==1, is.character(endpoint),
+         length(host_path)==1, is.character(host_path),
          is.numeric(session_timeout), length(session_timeout)==1,
          !is.na(session_timeout),
          is.logical(convert_uint), length(convert_uint)==1,
@@ -119,7 +119,7 @@ methods::setMethod(
          ),
          https=https,
          ssl_verifypeer=ssl_verifypeer,
-         endpoint=endpoint,
+         host_path=host_path,
          session=session,
          convert_uint=convert_uint
       )
