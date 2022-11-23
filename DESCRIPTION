@@ -1,12 +1,17 @@
 Package: ClickHouseHTTP
 Type: Package
 Title: A Simple HTTP Database Interface to 'ClickHouse'
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
     person(
         "Patrice", "Godard",
         role = c("aut", "cre","cph"),
         email = "patrice.godard@gmail.com"
+    ),
+    person(
+        "Eusebiu", "Marcu",
+        role = "ctb",
+        email = "marcueusebiu@gmail.com"
     )
     )
 Description: 'ClickHouse' (<https://clickhouse.com/>)

@@ -18,6 +18,7 @@
   host_path = NA,
   session_timeout = 3600L,
   convert_uint = TRUE,
+  extended_headers = list(),
   ...
 )
 }
@@ -55,6 +56,10 @@ in \link{dbSendQuery,ClickHouseHTTPConnection,character-method})
 (when using Arrow format
 in \link{dbSendQuery,ClickHouseHTTPConnection,character-method})
 }}
+
+\item{extended_headers}{a named list with other HTTP headers
+(for example: \code{extended_headers=list("X-Authorization"="Bearer <token>")}
+can be used for OAuth access delegation)}
 
 \item{...}{Other parameters passed on to methods}
 }

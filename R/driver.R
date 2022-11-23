@@ -59,6 +59,9 @@ ClickHouseHTTP <- function(){
 #' - UInt32: POSIXct
 #' (when using Arrow format
 #' in [dbSendQuery,ClickHouseHTTPConnection,character-method])
+#' @param extended_headers a named list with other HTTP headers
+#' (for example: `extended_headers=list("X-Authorization"="Bearer <token>")`
+#' can be used for OAuth access delegation)
 #' @param ... Other parameters passed on to methods
 #'
 #' @return A ClickHouseHTTPConnection
@@ -85,6 +88,7 @@ methods::setMethod(
       host_path=NA,
       session_timeout=3600L,
       convert_uint=TRUE,
+      extended_headers=list(),
       ...
    ){
       host_path <- as.character(host_path)
@@ -102,7 +106,8 @@ methods::setMethod(
          is.numeric(session_timeout), length(session_timeout)==1,
          !is.na(session_timeout),
          is.logical(convert_uint), length(convert_uint)==1,
-         !is.na(convert_uint)
+         !is.na(convert_uint),
+         is.list(extended_headers)
       )
       session <- paste(
          format(Sys.time(), format="%Y%m%d%H%M%S"),
@@ -121,7 +126,8 @@ methods::setMethod(
          ssl_verifypeer=ssl_verifypeer,
          host_path=host_path,
          session=session,
-         convert_uint=convert_uint
+         convert_uint=convert_uint,
+         extended_headers=extended_headers
       )
 
       ## Check connection
