@@ -4,19 +4,19 @@
 #'
 #' @export
 #'
-methods::setClass("ClickHouseHTTPDriver", contains = "DBIDriver")
+setClass("ClickHouseHTTPDriver", contains = "DBIDriver")
 
 ###############################################################################@
 ## dbUnloadDrive ----
 ##
-methods::setMethod("dbUnloadDriver", "ClickHouseHTTPDriver", function(drv, ...){
+setMethod("dbUnloadDriver", "ClickHouseHTTPDriver", function(drv, ...){
    TRUE
 })
 
 ###############################################################################@
 ## show ----
 ##
-methods::setMethod("show", "ClickHouseHTTPDriver", function(object){
+setMethod("show", "ClickHouseHTTPDriver", function(object){
    cat("<ClickHouseHTTPDriver>\n")
 })
 
@@ -31,7 +31,7 @@ methods::setMethod("show", "ClickHouseHTTPDriver", function(object){
 #' @export
 #'
 ClickHouseHTTP <- function(){
-   methods::new("ClickHouseHTTPDriver")
+   new("ClickHouseHTTPDriver")
 }
 
 ###############################################################################@
@@ -74,7 +74,7 @@ ClickHouseHTTP <- function(){
 #'
 #' @export
 #'
-methods::setMethod(
+setMethod(
    "dbConnect", "ClickHouseHTTPDriver",
    function(
       drv,
@@ -114,7 +114,7 @@ methods::setMethod(
          paste(sample(c(letters, LETTERS), 10), collapse=""),
          sep=""
       )
-      toRet <- methods::new(
+      toRet <- new(
          "ClickHouseHTTPConnection",
          host=host,
          port=as.integer(port),
@@ -147,7 +147,7 @@ methods::setMethod(
 ###############################################################################@
 ## dbDataType ----
 ##
-methods::setMethod(
+setMethod(
    "dbDataType", "ClickHouseHTTPDriver",
    function(dbObj, obj, ...){
       toRet <-
