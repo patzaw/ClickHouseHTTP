@@ -3,6 +3,7 @@
 ## Version 0.3.0
 
 - `extended_headers` parameter in `dbConnect()`
+- check current ClickHouse user in `dbConnect()`
 - New contributor: https://github.com/eusebiu
 
 <!----------------------------------------------------------------------------->

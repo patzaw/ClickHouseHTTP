@@ -135,6 +135,7 @@ setMethod(
       if(!v){
          stop(attr(v, "m"))
       }
+      toRet@user <- attr(v, "user")
 
       ## Set default db
       DBI::dbSendQuery(toRet, sprintf("USE `%s`", dbname))
