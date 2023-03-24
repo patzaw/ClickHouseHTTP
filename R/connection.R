@@ -531,16 +531,18 @@ setMethod(
    ## Add other headers ----
    qheaders <- c(qheaders, dbc@extended_headers)
    
+   url <- .build_http_req(
+      host=dbc@host, port=dbc@port, https=dbc@https,
+      host_path=dbc@host_path,
+      session=dbc@session, session_timeout=session_timeout,
+      query=query
+   )
    httr::POST(
-      url=.build_http_req(
-         host=dbc@host, port=dbc@port, https=dbc@https,
-         host_path=dbc@host_path,
-         session=dbc@session, session_timeout=session_timeout,
-         query=query
-      ),
+      url=url,
       body=qbody,
-      do.call(add_headers, qheaders),
-      config=httr::config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer))
+      do.call(httr::add_headers, qheaders),
+      config=httr::config(ssl_verifypeer=as.integer(dbc@ssl_verifypeer)),
+      handle=httr::handle_reset(url)
    )
 }
 
