@@ -19,6 +19,7 @@
   session_timeout = 3600L,
   convert_uint = TRUE,
   extended_headers = list(),
+  reset_handle = FALSE,
   ...
 )
 }
@@ -60,6 +61,9 @@ in \link{dbSendQuery,ClickHouseHTTPConnection,character-method})
 \item{extended_headers}{a named list with other HTTP headers
 (for example: \code{extended_headers=list("X-Authorization"="Bearer <token>")}
 can be used for OAuth access delegation)}
+
+\item{reset_handle}{a logical indicating how to manage Curl handles
+(see \link[httr:handle_pool]{httr::handle_pool}). If TRUE, handle reset is used (default: FALSE).}
 
 \item{...}{Other parameters passed on to methods}
 }

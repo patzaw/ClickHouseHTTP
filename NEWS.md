@@ -1,9 +1,10 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-## Version 0.3.1
+## Version 0.3.2
 
-- Use of `httr::handle_reset()` when calling `httr::POST()` to allow several
-independent connections in the same session
+- Add the possibility to use `httr::handle_reset()` when calling
+`httr::POST()` to allow several independent connections in the same session:
+when needed, set the "reset_handle" parameter to TRUE when calling `dbConnect()`
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->

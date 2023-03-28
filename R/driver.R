@@ -62,6 +62,8 @@ ClickHouseHTTP <- function(){
 #' @param extended_headers a named list with other HTTP headers
 #' (for example: `extended_headers=list("X-Authorization"="Bearer <token>")`
 #' can be used for OAuth access delegation)
+#' @param reset_handle a logical indicating how to manage Curl handles
+#' (see [httr::handle_pool]). If TRUE, handle reset is used (default: FALSE).
 #' @param ... Other parameters passed on to methods
 #'
 #' @return A ClickHouseHTTPConnection
@@ -89,6 +91,7 @@ setMethod(
       session_timeout=3600L,
       convert_uint=TRUE,
       extended_headers=list(),
+      reset_handle=FALSE,
       ...
    ){
       host_path <- as.character(host_path)
@@ -127,7 +130,8 @@ setMethod(
          host_path=host_path,
          session=session,
          convert_uint=convert_uint,
-         extended_headers=extended_headers
+         extended_headers=extended_headers,
+         reset_handle=reset_handle
       )
 
       ## Check connection
