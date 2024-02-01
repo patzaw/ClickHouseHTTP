@@ -91,7 +91,8 @@ setMethod(
                toRet <- try(data.table::fread(
                   text=l,
                   header=FALSE, sep="\t",
-                  colClasses=ifelse(chArray, "character", rType), skip=2,
+                  colClasses=ifelse(chArray, "character", rType),
+                  skip=2,
                   stringsAsFactors=FALSE, na.strings="\\N",
                   logical01=TRUE, quote=""
                ), silent=TRUE)
@@ -100,11 +101,14 @@ setMethod(
                      toRet <- try(data.table::fread(
                         text=l,
                         header=FALSE, sep="\t",
-                        colClasses=ifelse(chArray, "character", rType),
+                        # colClasses=ifelse(chArray, "character", rType),
                         nrow=0,
                         stringsAsFactors=FALSE, na.strings="\\N",
                         logical01=TRUE, quote=""
                      ), silent=TRUE)
+                     for(i in 1:ncol(toRet)){
+                        toRet[[i]] <- as(toRet[[i]], rType[i])
+                     }
                   }else{
                      stop(as.character(toRet))
                   }
@@ -122,11 +126,14 @@ setMethod(
                      toRet <- try(data.table::fread(
                         file=tmpf,
                         header=FALSE, sep="\t",
-                        colClasses=ifelse(chArray, "character", rType),
+                        # colClasses=ifelse(chArray, "character", rType),
                         nrow=0,
                         stringsAsFactors=FALSE, na.strings="\\N",
                         logical01=TRUE, quote=""
                      ), silent=TRUE)
+                     for(i in 1:ncol(toRet)){
+                        toRet[[i]] <- as(toRet[[i]], rType[i])
+                     }
                   }else{
                      stop(as.character(toRet))
                   }
