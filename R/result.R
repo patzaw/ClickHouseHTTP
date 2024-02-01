@@ -80,6 +80,18 @@ setMethod(
                   grepl("Int", chType), "integer",
                   NA
                )))))))))
+            cast_type <- function(type, x){
+               switch(
+                  type,
+                  "integer"=as.integer(x),
+                  "numeric"=as.numeric(x),
+                  "logical"=as.logical(x),
+                  "character"=as.character(x),
+                  "Date"=as.Date(x),
+                  "POSIXct"=as.POSIXct(x),
+                  "integer64"=as(x, "integer64")
+               )
+            }
             if(any(is.na(rType))){
                ut <- unique(chType[which(is.na(rType))])
                warning(sprintf(
@@ -107,7 +119,7 @@ setMethod(
                         logical01=TRUE, quote=""
                      ), silent=TRUE)
                      for(i in 1:ncol(toRet)){
-                        toRet[[i]] <- as(toRet[[i]], rType[i])
+                        toRet[[i]] <- cast_type(rType[i], toRet[[i]])
                      }
                   }else{
                      stop(as.character(toRet))
@@ -132,7 +144,7 @@ setMethod(
                         logical01=TRUE, quote=""
                      ), silent=TRUE)
                      for(i in 1:ncol(toRet)){
-                        toRet[[i]] <- as(toRet[[i]], rType[i])
+                        toRet[[i]] <- cast_type(rType[i], toRet[[i]])
                      }
                   }else{
                      stop(as.character(toRet))
