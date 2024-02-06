@@ -28,9 +28,9 @@ Imports:
    DBI (>= 0.3.0),
    httr,
    jsonlite,
-   arrow,
    data.table
 Suggests:
+   arrow,
    knitr,
    rmarkdown,
    dplyr,
@@ -39,3 +39,4 @@ Roxygen: list(markdown = TRUE)
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.3.1
+Additional_repositories: https://p3m.dev/cran/2024-02-02/
