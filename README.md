@@ -48,13 +48,13 @@ The following R packages available on CRAN are required:
   with URLs and HTTP
 - [jsonlite](https://CRAN.R-project.org/package=jsonlite): A Simple and
   Robust JSON Parser and Generator for R
-- [arrow](https://CRAN.R-project.org/package=arrow): Integration to
-  ‘Apache’ ‘Arrow’
 - [data.table](https://CRAN.R-project.org/package=data.table): Extension
   of `data.frame`
 
 And those are suggested:
 
+- [arrow](https://CRAN.R-project.org/package=arrow): Integration to
+  ‘Apache’ ‘Arrow’
 - [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
   Package for Dynamic Report Generation in R
 - [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic

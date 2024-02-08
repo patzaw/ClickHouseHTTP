@@ -492,37 +492,43 @@ setMethod(
 ## Helpers ----
 
 .select_format <- function(choice){
-  formats <- c("Arrow", "TabSeparatedWithNamesAndTypes")
-  if (identical(choice, formats)) {
-    # User did not specify, this is the default case
-    if (requireNamespace("arrow", quietly = TRUE)) {
-      # arrow is the default option
+   formats <- c("Arrow", "TabSeparatedWithNamesAndTypes")
+   if (identical(choice, formats)) {
+   ## User did not specify, this is the default case
+      if (requireNamespace("arrow", quietly = TRUE)) {
+         ## arrow is the default option
+         return("Arrow")
+      } else {
+         ## Sadly, it's not available,
+         ## so warn and use TabSeparatedWithNamesAndTypes
+         msg <- paste(
+           "The 'arrow' package is not available.",
+           "Using 'TabSeparatedWithNamesAndTypes' instead.\n",
+           "To use arrow, install it with:\n",
+           'install.packages("arrow", repos =',
+           'c("https://p3m.dev/cran/2024-02-02", getOption("repos")))',
+           sep = " "
+         )
+         warning(msg, call. = FALSE)
+         return("TabSeparatedWithNamesAndTypes")
+      }
+   } else if (identical(choice, "Arrow")) {
+      ## User has explicitly chosen arrow, so error if arrow isn't available
+      if (!requireNamespace("arrow", quietly = TRUE)) {
+         msg <- paste(
+           "The 'arrow' package is required but is not available.",
+           "Install it with:\n",
+           'install.packages("arrow", repos =',
+           'c("https://p3m.dev/cran/2024-02-02", getOption("repos")))',
+           sep = " "
+         )
+         stop(msg, call. = FALSE)
+      }
       return("Arrow")
-    } else {
-      # Sadly, it's not available, so warn and use TabSeparatedWithNamesAndTypes
-      msg <- paste(
-        "The 'arrow' package is not available. Using 'TabSeparatedWithNamesAndTypes' instead. To use arrow, install it with:",
-        'install.packages("arrow", repos = c("https://p3m.dev/cran/2024-02-02", getOption("repos")))',
-        sep = "\n"
-      )
-      warning(msg, call. = FALSE)
-      return("TabSeparatedWithNamesAndTypes")
-    }
-  } else if (identical(choice, "Arrow")) {
-    # User has explicitly chosen arrow, so error if arrow isn't available
-    if (!requireNamespace("arrow", quietly = TRUE)) {
-      msg <- paste(
-        "The 'arrow' package is required but is not available. Install it with:",
-        'install.packages("arrow", repos = c("https://p3m.dev/cran/2024-02-02", getOption("repos")))',
-        sep = "\n"
-      )
-      stop(msg, call. = FALSE)
-    }
-    return("Arrow")
-  } else {
-    # Usual match.args handling
-    return(match.arg(choice, formats))
-  }
+   } else {
+      # Usual match.args handling
+      return(match.arg(choice, formats))
+   }
 }
 
 .build_http_req <- function(
