@@ -12,8 +12,8 @@ README
 - [Alternatives](#alternatives)
 - [Acknowledgments](#acknowledgments)
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
-[![](http://cranlogs.r-pkg.org/badges/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
+[![](https://cranlogs.r-pkg.org/badges/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
 
 *ClickHouse* (<https://clickhouse.com/>) is an open-source, high
 performance columnar OLAP (online analytical processing of queries)
