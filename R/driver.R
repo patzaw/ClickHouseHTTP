@@ -49,6 +49,8 @@ ClickHouseHTTP <- function(){
 #' HTTPS (default: TRUE)
 #' @param host_path a path to use on host (e.g. "ClickHouse/"):
 #' it allows to connect on a server behind a reverse proxy for example
+#' @param use_session a logical indicating if a session should be created and
+#' use in ClickHouse (default: FALSE)
 #' @param session_timeout timeout in seconds (default: 3600L seconds)
 #' @param convert_uint a logical: if TRUE (default), UInt ClickHouse
 #' data types are converted in the following R classes:
@@ -64,6 +66,9 @@ ClickHouseHTTP <- function(){
 #' can be used for OAuth access delegation)
 #' @param reset_handle a logical indicating how to manage Curl handles
 #' (see [httr::handle_pool]). If TRUE, handle reset is used (default: FALSE).
+#' @param settings list of
+#' [Clickhouse 
+#' settings](https://clickhouse.com/docs/en/operations/settings/settings/)
 #' @param ... Other parameters passed on to methods
 #'
 #' @return A ClickHouseHTTPConnection
@@ -88,10 +93,12 @@ setMethod(
       https=FALSE,
       ssl_verifypeer=TRUE,
       host_path=NA,
+      use_session = FALSE,
       session_timeout=3600L,
       convert_uint=TRUE,
       extended_headers=list(),
       reset_handle=FALSE,
+      settings = list(),
       ...
    ){
       host_path <- as.character(host_path)
@@ -110,13 +117,19 @@ setMethod(
          !is.na(session_timeout),
          is.logical(convert_uint), length(convert_uint)==1,
          !is.na(convert_uint),
-         is.list(extended_headers)
+         is.list(extended_headers),
+         is.list(settings)
       )
-      session <- paste(
-         format(Sys.time(), format="%Y%m%d%H%M%S"),
-         paste(sample(c(letters, LETTERS), 10), collapse=""),
-         sep=""
-      )
+      if(use_session){
+         session <- paste(
+            format(Sys.time(), format="%Y%m%d%H%M%S"),
+            paste(sample(c(letters, LETTERS), 10), collapse=""),
+            sep=""
+         )
+      }else{
+         session <- as.character(NA)
+      }
+      
       toRet <- new(
          "ClickHouseHTTPConnection",
          host=host,
@@ -131,7 +144,11 @@ setMethod(
          session=session,
          convert_uint=convert_uint,
          extended_headers=extended_headers,
-         reset_handle=reset_handle
+         reset_handle=reset_handle,
+         settings = paste(
+            paste(names(settings), unlist(settings), sep="="),
+            collapse="&"
+         )
       )
 
       ## Check connection

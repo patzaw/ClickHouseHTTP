@@ -18,7 +18,8 @@ setClass(
       session="character",
       convert_uint="logical",
       extended_headers="list",
-      reset_handle="logical"
+      reset_handle="logical",
+      settings="character"
    )
 )
 
@@ -494,20 +495,60 @@ setMethod(
 .build_http_req <- function(
    host, port, https, host_path,
    session, session_timeout=NA,
+   settings,
    query=""
 ){
-   sprintf(
-      "%s://%s:%s/%s?session_id=%s&session_check=%s%s&query=%s",
-      ifelse(https, "https", "http"),
-      host, port,
-      ifelse(is.na(host_path), "", paste0(host_path, "/")),
-      session, as.integer(is.na(session_timeout)),
-      ifelse(
-         is.na(session_timeout), "",
-         sprintf("&session_timeout=%s", as.integer(session_timeout))
-      ),
-      utils::URLencode(query)
-   )
+   use_session <- !is.na(session)
+   if(use_session){
+      to_ret <- sprintf(
+         "%s://%s:%s/%s?session_id=%s&session_check=%s%s%s%s",
+         ifelse(https, "https", "http"),
+         host, port,
+         ifelse(is.na(host_path), "", paste0(host_path, "/")),
+         session,
+         as.integer(is.na(session_timeout)),
+         ifelse(
+            is.na(session_timeout), "",
+            sprintf("&session_timeout=%s", as.integer(session_timeout))
+         ),
+         ifelse(
+           settings=="",
+           "",
+           paste0("&", settings)
+         ),
+         ifelse(
+            is.na(query) || query == "",
+            "",
+            sprintf("&query=%s", utils::URLencode(query))
+         )
+      )
+   }else{
+      to_ret <- sprintf(
+         "%s://%s:%s/%s%s%s",
+         ifelse(https, "https", "http"),
+         host, port,
+         ifelse(is.na(host_path), "", paste0(host_path, "/")),
+         ifelse(
+            settings=="",
+            "",
+            paste0("?", settings)
+         ),
+         ifelse(
+            is.na(query) || query == "",
+            "",
+            sprintf(
+               "%squery=%s",
+               ifelse(
+                  settings=="",
+                  "?",
+                  "&"
+               ),
+               utils::URLencode(query)
+            )
+         )
+      )
+   }
+   return(to_ret)
 }
 
 .send_query <- function(
@@ -536,6 +577,7 @@ setMethod(
       host=dbc@host, port=dbc@port, https=dbc@https,
       host_path=dbc@host_path,
       session=dbc@session, session_timeout=session_timeout,
+      settings = dbc@settings,
       query=query
    )
    if(dbc@reset_handle){
