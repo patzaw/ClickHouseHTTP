@@ -5,7 +5,13 @@
 \alias{ClickHouseHTTPConnection-class}
 \alias{dbSendQuery,ClickHouseHTTPConnection,character-method}
 \alias{dbGetInfo,ClickHouseHTTPConnection-method}
+\alias{dbListTables,ClickHouseHTTPConnection-method}
+\alias{dbExistsTable,ClickHouseHTTPConnection,character-method}
+\alias{dbReadTable,ClickHouseHTTPConnection,character-method}
+\alias{dbListFields,ClickHouseHTTPConnection,character-method}
+\alias{dbRemoveTable,ClickHouseHTTPConnection,ANY-method}
 \alias{dbCreateTable,ClickHouseHTTPConnection-method}
+\alias{dbAppendTable,ClickHouseHTTPConnection-method}
 \alias{dbWriteTable,ClickHouseHTTPConnection,ANY-method}
 \title{ClickHouseHTTPConnection class.}
 \usage{
@@ -19,9 +25,20 @@
 
 \S4method{dbGetInfo}{ClickHouseHTTPConnection}(dbObj, ...)
 
+\S4method{dbListTables}{ClickHouseHTTPConnection}(conn, database = NA, ...)
+
+\S4method{dbExistsTable}{ClickHouseHTTPConnection,character}(conn, name, database = NA, ...)
+
+\S4method{dbReadTable}{ClickHouseHTTPConnection,character}(conn, name, database = NA, ...)
+
+\S4method{dbListFields}{ClickHouseHTTPConnection,character}(conn, name, database = NA, ...)
+
+\S4method{dbRemoveTable}{ClickHouseHTTPConnection,ANY}(conn, name, database = NA, ...)
+
 \S4method{dbCreateTable}{ClickHouseHTTPConnection}(
   conn,
   name,
+  database = NA,
   fields,
   engine = "TinyLog",
   overwrite = FALSE,
@@ -30,9 +47,12 @@
   temporary = FALSE
 )
 
+\S4method{dbAppendTable}{ClickHouseHTTPConnection}(conn, name, database = NA, value, ..., row.names = NULL)
+
 \S4method{dbWriteTable}{ClickHouseHTTPConnection,ANY}(
   conn,
   name,
+  database = NA,
   value,
   overwrite = FALSE,
   append = FALSE,
@@ -54,6 +74,9 @@ Two formats are supported:
 \item{...}{Other parameters passed on to methods}
 
 \item{dbObj}{a ClickHouseHTTPConnection object}
+
+\item{database}{the database to consider. If NA (default), the default
+database or  the one in use in the session (if a session is defined).}
 
 \item{name}{the name of the table to create}
 
@@ -79,7 +102,7 @@ then it is deleted before creating the new one (default: FALSE)}
 
 \item{temporary}{unsupported parameter (add for compatibility reason)}
 
-\item{value}{the table to write}
+\item{value}{a data.frame}
 
 \item{append}{if TRUE, the values are added to the database table if
 it exists (default: FALSE).}
@@ -99,7 +122,19 @@ A list with the following elements:
 \item https: Is the connection using HTTPS protocol instead of HTTP
 }
 
+A vector of character with table names.
+
+A logical.
+
+A data.frame.
+
+A vector of character with column names.
+
+\code{invisible(TRUE)}
+
 dbCreateTable() returns TRUE, invisibly.
+
+\code{invisible(TRUE)}
 
 TRUE; called for side effects
 }
@@ -110,7 +145,19 @@ Send SQL query to ClickHouse
 
 Information about the ClickHouse database
 
+List tables in ClickHouse
+
+Does a table exist?
+
+Read database tables as data frames
+
+List field names of a table
+
+Remove a table from the database
+
 Create a table in ClickHouse
+
+Insert rows into a table
 
 Write a table in ClickHouse
 }

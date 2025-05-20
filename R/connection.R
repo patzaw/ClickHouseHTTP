@@ -220,11 +220,34 @@ setMethod(
 
 ###############################################################################@
 ## dbListTables ----
-##
+#' List tables in ClickHouse
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
+#' @param ... Other parameters passed on to methods
+#'
+#' @return A vector of character with table names.
+#'
+#' @rdname ClickHouseHTTPConnection-class
+#'
 setMethod(
    "dbListTables", "ClickHouseHTTPConnection",
-   function(conn, ...){
-      return(as.character(DBI::dbGetQuery(conn, "SHOW TABLES")[[1]]))
+   function(conn, database = NA, ...){
+      if(is.na(database)){
+         qdb <- ""
+      }else{
+         qdb <- paste(" FROM", DBI::dbQuoteIdentifier(conn, database))
+      }
+      return(
+         as.character(DBI::dbGetQuery(
+            conn,
+            sprintf(
+               "SHOW TABLES%s",
+               qdb
+            )
+         )[[1]])
+      )
    }
 )
 
@@ -288,26 +311,65 @@ setMethod(
 
 ###############################################################################@
 ## dbExistsTable ----
-##
+#' Does a table exist?
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param name the table name
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
+#' @param ... Other parameters passed on to methods
+#'
+#' @return A logical.
+#'
+#' @rdname ClickHouseHTTPConnection-class
+#'
 setMethod(
    "dbExistsTable", c("ClickHouseHTTPConnection", "character"),
-   function(conn, name, ...){
+   function(conn, name, database = NA, ...){
       qname <- DBI::dbQuoteIdentifier(conn, name)
-      return(DBI::dbGetQuery(conn, paste("EXISTS", qname))[[1]])
+      if(is.na(database)){
+         qdb <- ""
+      }else{
+         qdb <- paste0(DBI::dbQuoteIdentifier(conn, database), ".")
+      }
+      return(DBI::dbGetQuery(
+         conn,
+         sprintf(
+            "EXISTS %s%s",
+            qdb,
+            qname
+         )
+      )[[1]])
    }
 )
 
 ###############################################################################@
 ## dbReadTable ----
-##
+#' Read database tables as data frames
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param name the table name
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
+#' @param ... Other parameters passed on to methods
+#'
+#' @return A data.frame.
+#'
+#' @rdname ClickHouseHTTPConnection-class
+#'
 setMethod(
    "dbReadTable", c("ClickHouseHTTPConnection", "character"),
-   function(conn, name,...){
+   function(conn, name, database = NA, ...){
       qname <- DBI::dbQuoteIdentifier(conn, name)
+      if(is.na(database)){
+         qdb <- ""
+      }else{
+         qdb <- paste0(DBI::dbQuoteIdentifier(conn, database), ".")
+      }
       ## Identify UUID columns for converting them in String
       coltype <- DBI::dbGetQuery(
          conn,
-         paste("DESCRIBE TABLE", qname)
+         paste0("DESCRIBE TABLE ", qdb, qname)
       )[, c("name", "type")]
       if(any(coltype$type=="UUID")){
          query <- paste(
@@ -327,7 +389,7 @@ setMethod(
       }
       return(DBI::dbGetQuery(
          conn,
-         paste(query, "FROM", qname),
+         paste(query, "FROM ", qdb, qname),
          ...
       ))
    }
@@ -335,22 +397,54 @@ setMethod(
 
 ###############################################################################@
 ## dbListFields ----
-##
+#' List field names of a table
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param name the table name
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
+#' @param ... Other parameters passed on to methods
+#'
+#' @return A vector of character with column names.
+#'
+#' @rdname ClickHouseHTTPConnection-class
+#'
 setMethod(
    "dbListFields", c("ClickHouseHTTPConnection", "character"),
-   function(conn, name, ...){
+   function(conn, name, database = NA, ...){
    qname <- DBI::dbQuoteIdentifier(conn, name)
-   return(DBI::dbGetQuery(conn, paste("DESCRIBE TABLE", qname))$name)
+   if(is.na(database)){
+      qdb <- ""
+   }else{
+      qdb <- paste0(DBI::dbQuoteIdentifier(conn, database), ".")
+   }
+   return(DBI::dbGetQuery(conn, paste0("DESCRIBE TABLE ", qdb, qname))$name)
 })
 
 ###############################################################################@
 ## dbRemoveTable ----
-##
+#' Remove a table from the database
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param name the table name
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
+#' @param ... Other parameters passed on to methods
+#'
+#' @return `invisible(TRUE)`
+#'
+#' @rdname ClickHouseHTTPConnection-class
+#'
 setMethod(
    "dbRemoveTable", "ClickHouseHTTPConnection",
-   function(conn, name, ...){
+   function(conn, name, database = NA, ...){
       qname <- DBI::dbQuoteIdentifier(conn, name)
-      DBI::dbSendQuery(conn, paste0("DROP TABLE ", qname))
+      if(is.na(database)){
+         qdb <- ""
+      }else{
+         qdb <- paste0(DBI::dbQuoteIdentifier(conn, database), ".")
+      }
+      DBI::dbSendQuery(conn, paste0("DROP TABLE ", qdb, qname))
       return(invisible(TRUE))
    }
 )
@@ -361,6 +455,8 @@ setMethod(
 #'
 #' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
 #' @param name the name of the table to create
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
 #' @param fields a character vector with the name of the fields and their
 #' ClickHouse type
 #' (e.g.
@@ -376,7 +472,7 @@ setMethod(
 #' then it is deleted before creating the new one (default: FALSE)
 #' @param row.names unsupported parameter (add for compatibility reason)
 #' @param temporary unsupported parameter (add for compatibility reason)
-#' @param ... Other parameters passed on to methods
+#' @param ... for compatibility purpose; not used
 #'
 #' @return dbCreateTable() returns TRUE, invisibly.
 #'
@@ -389,18 +485,22 @@ setMethod(
 setMethod(
    "dbCreateTable", "ClickHouseHTTPConnection",
    function(
-      conn, name, fields, engine="TinyLog",
+      conn, name, database = NA, fields, engine="TinyLog",
       overwrite=FALSE, ..., row.names=NULL, temporary=FALSE
    ){
       qname <- DBI::dbQuoteIdentifier(conn, name)
       if(overwrite && DBI::dbExistsTable(conn, qname)){
-         DBI::dbRemoveTable(conn, qname)
+         DBI::dbRemoveTable(conn, qname, database = database)
       }
-
+      if(is.na(database)){
+         qdb <- ""
+      }else{
+         qdb <- paste0(DBI::dbQuoteIdentifier(conn, database), ".")
+      }
       query <- paste(
          sprintf(
             "CREATE TABLE %s (",
-            qname
+            paste0(qdb, qname)
          ),
          paste(fields, collapse=",\n"),
          ") ENGINE =", engine
@@ -413,17 +513,35 @@ setMethod(
 
 ###############################################################################@
 ## dbAppendTable ----
-##
+#' Insert rows into a table
+#'
+#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param name the table name
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
+#' @param value a data.frame
+#' @param row.names unsupported parameter (add for compatibility reason)
+#' @param ... Other parameters passed on to methods
+#'
+#' @return `invisible(TRUE)`
+#'
+#' @rdname ClickHouseHTTPConnection-class
+#'
 setMethod(
    "dbAppendTable", "ClickHouseHTTPConnection",
    function(
-      conn, name, value, ..., row.names=NULL
+      conn, name, database = NA, value, ..., row.names=NULL
    ){
       qname <- DBI::dbQuoteIdentifier(conn, name)
+      if(is.na(database)){
+         qdb <- ""
+      }else{
+         qdb <- paste0(DBI::dbQuoteIdentifier(conn, database), ".")
+      }
       tmpf <- tempfile()
       on.exit(file.remove(tmpf))
       arrow::write_feather(value, tmpf)
-      query <- sprintf("INSERT INTO %s FORMAT Arrow", qname)
+      query <- sprintf("INSERT INTO %s FORMAT Arrow", paste0(qdb, qname))
       res <- DBI::dbSendQuery(conn=conn, statement=query, file=tmpf)
       return(invisible(DBI::dbGetRowsAffected(res)))
    }
@@ -435,7 +553,9 @@ setMethod(
 #'
 #' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
 #' @param name the name of the table to create
-#' @param value the table to write
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
+#' @param value a data.frame
 #' @param overwrite if TRUE and if a table with the same name exists,
 #' then it is deleted before creating the new one (default: FALSE)
 #' @param append if TRUE, the values are added to the database table if
@@ -459,7 +579,7 @@ setMethod(
 setMethod(
    "dbWriteTable", "ClickHouseHTTPConnection",
    function(
-      conn, name, value,
+      conn, name, database = NA, value,
       overwrite=FALSE, append=FALSE,
       engine="TinyLog", ...
 
@@ -467,7 +587,6 @@ setMethod(
       if(overwrite && append){
          stop("overwrite and append cannot be both TRUE")
       }
-      qname <- DBI::dbQuoteIdentifier(conn, name)
       if(!append){
          cdef <- unlist(lapply(
             value, function(x){
@@ -480,11 +599,13 @@ setMethod(
          ))
          fields <- paste(DBI::dbQuoteIdentifier(conn, names(cdef)), cdef)
          DBI::dbCreateTable(
-            conn=conn, name=name, fields=fields,
+            conn=conn, name=name, database = database, fields=fields,
             engine=engine, overwrite=overwrite
          )
       }
-      toRet <- DBI::dbAppendTable(conn=conn, name=name, value=value)
+      toRet <- DBI::dbAppendTable(
+         conn=conn, name=name, database = database, value=value
+      )
       return(invisible(toRet))
    }
 )
