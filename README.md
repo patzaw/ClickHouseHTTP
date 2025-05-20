@@ -80,13 +80,17 @@ devtools::install_github("patzaw/ClickHouseHTTP")
 library(DBI)
 ## HTTP connection
 con <- dbConnect(
-   ClickHouseHTTP::ClickHouseHTTP(), host="localhost",
-   port=8123
+  ClickHouseHTTP::ClickHouseHTTP(),
+  host = "localhost",
+  port = 8123
 )
 ## HTTPS connection (without ssl peer verification)
 con <- dbConnect(
-   ClickHouseHTTP::ClickHouseHTTP(), host="localhost",
-   port=8443, https=TRUE, ssl_verifypeer=FALSE
+  ClickHouseHTTP::ClickHouseHTTP(),
+  host = "localhost",
+  port = 8443,
+  https = TRUE,
+  ssl_verifypeer = FALSE
 )
 ```
 
@@ -95,7 +99,7 @@ con <- dbConnect(
 ``` r
 library(dplyr)
 data("mtcars")
-mtcars <- as_tibble(mtcars, rownames="car")
+mtcars <- as_tibble(mtcars, rownames = "car")
 dbWriteTable(con, "mtcars", mtcars)
 ```
 
@@ -117,8 +121,9 @@ the *TabSeparatedWithNamesAndTypes* format.
 
 ``` r
 selCars <- dbGetQuery(
-   con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
-   format="TabSeparatedWithNamesAndTypes"
+  con,
+  "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
+  format = "TabSeparatedWithNamesAndTypes"
 )
 ## Identifying the original ClickHouse data types
 attr(selCars, "type")
@@ -140,11 +145,13 @@ also shows the support of R `list` using the *Array* ClickHouse type.
 
 ``` r
 data("swiss")
-swiss <- as_tibble(swiss, rownames="province")
-swiss <- mutate(swiss, "pr letters"=strsplit(province, ""))
+swiss <- as_tibble(swiss, rownames = "province")
+swiss <- mutate(swiss, "pr letters" = strsplit(province, ""))
 dbWriteTable(
-   con, "swiss", swiss,
-   engine="MergeTree() ORDER BY (Fertility, province)"
+  con,
+  "swiss",
+  swiss,
+  engine = "MergeTree() ORDER BY (Fertility, province)"
 )
 swissFromDB <- dbReadTable(con, "swiss")
 ```

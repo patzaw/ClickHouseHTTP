@@ -85,29 +85,32 @@ Connect to a ClickHouse database using the ClickHouseHTTP DBI
 }
 \examples{
 \dontrun{
-
 ## Connection ----
 
 library(DBI)
 ### HTTP connection ----
 
 con <- dbConnect(
-   ClickHouseHTTP::ClickHouseHTTP(), host="localhost",
-   port=8123
+  ClickHouseHTTP::ClickHouseHTTP(),
+  host = "localhost",
+  port = 8123
 )
 
 ### HTTPS connection (without ssl peer verification) ----
 
 con <- dbConnect(
-   ClickHouseHTTP::ClickHouseHTTP(), host="localhost",
-   port=8443, https=TRUE, ssl_verifypeer=FALSE
+  ClickHouseHTTP::ClickHouseHTTP(),
+  host = "localhost",
+  port = 8443,
+  https = TRUE,
+  ssl_verifypeer = FALSE
 )
 
 ## Write a table in the database ----
 
 library(dplyr)
 data("mtcars")
-mtcars <- as_tibble(mtcars, rownames="car")
+mtcars <- as_tibble(mtcars, rownames = "car")
 dbWriteTable(con, "mtcars", mtcars)
 
 ## Query the database ----
@@ -120,8 +123,9 @@ dbGetQuery(con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110")
 ## The `format` argument of the `dbGetQuery()` function can be used to
 ## rely on the *TabSeparatedWithNamesAndTypes* format.
 selCars <- dbGetQuery(
-   con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
-   format="TabSeparatedWithNamesAndTypes"
+  con,
+  "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
+  format = "TabSeparatedWithNamesAndTypes"
 )
 ## Identifying the original ClickHouse data types
 attr(selCars, "type")
@@ -138,11 +142,13 @@ dbSendQuery(con, "USE swiss")
 ## The example below shows that spaces in column names are supported.
 ## It also shows the support of R `list` using the *Array* ClickHouse type.
 data("swiss")
-swiss <- as_tibble(swiss, rownames="province")
-swiss <- mutate(swiss, "pr letters"=strsplit(province, ""))
+swiss <- as_tibble(swiss, rownames = "province")
+swiss <- mutate(swiss, "pr letters" = strsplit(province, ""))
 dbWriteTable(
-   con, "swiss", swiss,
-   engine="MergeTree() ORDER BY (Fertility, province)"
+  con,
+  "swiss",
+  swiss,
+  engine = "MergeTree() ORDER BY (Fertility, province)"
 )
 swissFromDB <- dbReadTable(con, "swiss")
 
