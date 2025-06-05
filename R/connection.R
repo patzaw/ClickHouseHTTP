@@ -62,7 +62,8 @@ setMethod(
 ## dbSendQuery ----
 #' Send SQL query to ClickHouse
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param statement the SQL query statement
 #' @param format the format used by ClickHouse to send the results.
 #' Two formats are supported:
@@ -235,7 +236,8 @@ setMethod(
 ## dbListTables ----
 #' List tables in ClickHouse
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
 #' @param ... Other parameters passed on to methods
@@ -333,7 +335,8 @@ setMethod(
 ## dbExistsTable ----
 #' Does a table exist?
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the table name
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
@@ -368,7 +371,8 @@ setMethod(
 ## dbReadTable ----
 #' Read database tables as data frames
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the table name
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
@@ -424,7 +428,8 @@ setMethod(
 ## dbListFields ----
 #' List field names of a table
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the table name
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
@@ -452,7 +457,8 @@ setMethod(
 ## dbRemoveTable ----
 #' Remove a table from the database
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the table name
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
@@ -481,7 +487,8 @@ setMethod(
 ## dbCreateTable ----
 #' Create a table in ClickHouse
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the name of the table to create
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
@@ -552,7 +559,8 @@ setMethod(
 ## dbAppendTable ----
 #' Insert rows into a table
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the table name
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
@@ -594,7 +602,8 @@ setMethod(
 ## dbWriteTable ----
 #' Write a table in ClickHouse
 #'
-#' @param conn a ClickHouseHTTPConnection object created with [dbConnect()]
+#' @param conn a ClickHouseHTTPConnection object created
+#' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the name of the table to create
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).

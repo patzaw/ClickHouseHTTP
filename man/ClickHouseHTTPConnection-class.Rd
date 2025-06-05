@@ -61,7 +61,8 @@
 )
 }
 \arguments{
-\item{conn}{a ClickHouseHTTPConnection object created with \code{\link[=dbConnect]{dbConnect()}}}
+\item{conn}{a ClickHouseHTTPConnection object created
+with \code{\link[=ClickHouseHTTPDriver-class]{dbConnect()}}}
 
 \item{statement}{the SQL query statement}
 
