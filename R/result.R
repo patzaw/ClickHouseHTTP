@@ -281,47 +281,63 @@ setMethod(
     if (inherits(at, "UInt16")) {
       toRet <- arrow::date32()
     }
-    if (inherits(at, "Date32")) {
-      toRet <- arrow::int32()
-    }
     if (inherits(at, "UInt32")) {
       toRet <- arrow::timestamp()
-    }
-    if (inherits(at, "Timestamp")) {
-      toRet <- arrow::int64()
     }
   }
   return(toRet)
 }
+.at_intermediate <- function(at) {
+  ## For UInt16/UInt32 sent by older ClickHouse, Arrow cannot cast directly to
+  ## date32/timestamp. We need an intermediate int32/int64 cast first.
+  ## This function returns the intermediate type for that first step.
+  if (inherits(at, "ListType")) {
+    return(arrow::list_of(.at_intermediate(at$value_type)))
+  }
+  if (inherits(at, "UInt16")) {
+    return(arrow::int32())
+  }
+  if (inherits(at, "UInt32")) {
+    return(arrow::int64())
+  }
+  return(NULL)
+}
 .sch_cast <- function(schema, convert_uint = TRUE) {
-  toRet <- list(do.call(
-    arrow::schema,
+  field_names <- sapply(schema$fields, function(x) x$name)
+  orig_types <- lapply(schema$fields, function(x) x$type)
+
+  make_schema <- function(types) {
     do.call(
-      c,
-      lapply(schema$fields, function(x) {
-        toRet <- list(.at_cast(x$type, convert_uint = convert_uint))
-        names(toRet) <- x$name
-        return(toRet)
-      })
-    )
-  ))
-  if (convert_uint) {
-    toRet <- c(
-      list(do.call(
-        arrow::schema,
-        do.call(
-          c,
-          lapply(toRet[[1]]$fields, function(x) {
-            toRet <- list(.at_cast(x$type, convert_uint = convert_uint))
-            names(toRet) <- x$name
-            return(toRet)
-          })
-        )
-      )),
-      toRet
+      arrow::schema,
+      setNames(types, field_names)
     )
   }
-  return(toRet)
+
+  final_types <- lapply(orig_types, function(t) {
+    .at_cast(t, convert_uint = convert_uint)
+  })
+
+  if (!convert_uint) {
+    return(list(make_schema(final_types)))
+  }
+
+  ## For columns where ClickHouse sends UInt16/UInt32 (old-style Date/DateTime),
+  ## Arrow requires an intermediate int32/int64 cast before casting to
+  ## date32/timestamp.
+  ## Columns already typed as date32/timestamp pass through unchanged.
+  intermediate_types <- lapply(orig_types, function(t) {
+    inter <- .at_intermediate(t)
+    if (is.null(inter)) .at_cast(t, convert_uint = convert_uint) else inter
+  })
+
+  needs_intermediate <- any(sapply(orig_types, function(t) {
+    !is.null(.at_intermediate(t))
+  }))
+
+  if (needs_intermediate) {
+    return(list(make_schema(intermediate_types), make_schema(final_types)))
+  }
+  return(list(make_schema(final_types)))
 }
 .af_cast <- function(af, convert_uint = TRUE) {
   rs <- af$schema

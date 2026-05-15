@@ -1,5 +1,20 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+## Version 0.3.5
+
+- Bug fix (identified and corrected by Claude): `Date` columns returned as
+  integers when using `format="Arrow"`. Newer ClickHouse versions send `Date`
+  as Arrow `date32` directly, but the internal type-casting logic contained a
+  `Date32 → int32` rule that was only ever intended as an intermediate step for
+  old ClickHouse (which sent `Date` as `UInt16`). When applied to an already
+  correctly typed `date32` column, it stripped the date semantics before
+  conversion to R, yielding an integer instead of a `Date`. Fixed by rewriting
+  the Arrow schema cast helpers (`result.R`) to generate the two-step
+  `UInt16 → int32 → date32` chain only when the source column is actually
+  `UInt16`, leaving `date32` and `timestamp` columns untouched.
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 ## Version 0.3.4
 
 - Don't use session by default
