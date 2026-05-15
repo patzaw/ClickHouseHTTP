@@ -52,6 +52,7 @@ The following R packages available on CRAN are required:
   ‘Apache’ ‘Arrow’
 - [data.table](https://CRAN.R-project.org/package=data.table): Extension
   of `data.frame`
+- [stats](https://CRAN.R-project.org/package=stats): The R Stats Package
 
 And those are suggested:
 

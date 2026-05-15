@@ -5,5 +5,6 @@
 #'
 #' @importFrom  data.table fread
 #' @importFrom jsonlite fromJSON
+#' @importFrom stats setNames
 #'
 NULL

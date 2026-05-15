@@ -29,7 +29,8 @@ Imports:
    httr,
    jsonlite,
    arrow,
-   data.table
+   data.table,
+   stats
 Suggests:
    knitr,
    rmarkdown,

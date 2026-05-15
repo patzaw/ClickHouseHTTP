@@ -309,7 +309,7 @@ setMethod(
   make_schema <- function(types) {
     do.call(
       arrow::schema,
-      setNames(types, field_names)
+      stats::setNames(types, field_names)
     )
   }
 
