@@ -1,5 +1,22 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+## Version 0.99.0
+
+- Migrated HTTP backend from `httr` to `httr2`: all requests are now built
+  using the httr2 request pipeline (`request()` → `req_headers()` →
+  `req_options()` → `req_perform()`).
+- The `reset_handle` parameter of `dbConnect()` now maps to the httr2/curl
+  `fresh_connect` option instead of the former `httr::handle_reset()`. Its
+  behaviour is unchanged: set to TRUE to force a new TCP connection for each
+  request rather than reusing a pooled one.
+- HTTP error responses are handled manually (via `.query_success()`) rather
+  than relying on httr2's automatic error raising, preserving existing
+  ClickHouse exception-code detection logic.
+- Minimum R version bumped to 4.1 (required by the native pipe `|>` used in
+  the httr2 request pipeline).
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 ## Version 0.3.5
 
 - Bug fix (identified and corrected by Claude): `Date` columns returned as

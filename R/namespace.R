@@ -1,6 +1,6 @@
 #' @import DBI
 #' @import methods
-#' @import httr
+#' @import httr2
 #' @import arrow
 #'
 #' @importFrom  data.table fread

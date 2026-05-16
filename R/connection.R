@@ -155,9 +155,14 @@ setMethod(
       }
       stop(m)
     }
-    resEnv <- as.environment(r)
+    resEnv <- new.env(parent = emptyenv())
+    resEnv$content <- if (httr2::resp_has_body(r)) {
+      httr2::resp_body_raw(r)
+    } else {
+      raw(0)
+    }
     resEnv$ch_summary <- lapply(
-      jsonlite::fromJSON(r$headers$`x-clickhouse-summary`),
+      jsonlite::fromJSON(httr2::resp_header(r, "x-clickhouse-summary")),
       as.numeric
     )
     resEnv$fetched <- FALSE
@@ -754,7 +759,6 @@ setMethod(
     qbody <- query
     query <- ""
   } else {
-    qbody <- httr::upload_file(file)
     query <- utils::URLencode(query)
   }
 
@@ -776,35 +780,36 @@ setMethod(
     settings = dbc@settings,
     query = query
   )
-  if (dbc@reset_handle) {
-    httr::POST(
-      url = url,
-      body = qbody,
-      do.call(httr::add_headers, qheaders),
-      config = httr::config(ssl_verifypeer = as.integer(dbc@ssl_verifypeer)),
-      handle = httr::handle_reset(url)
-    )
+
+  req <- do.call(
+    httr2::req_headers,
+    c(list(httr2::request(url)), qheaders)
+  ) |>
+    httr2::req_options(ssl_verifypeer = as.integer(dbc@ssl_verifypeer)) |>
+    httr2::req_error(is_error = \(r) FALSE)
+
+  if (!is.na(file)) {
+    req <- httr2::req_body_file(req, path = file)
   } else {
-    httr::POST(
-      url = url,
-      body = qbody,
-      do.call(httr::add_headers, qheaders),
-      config = httr::config(ssl_verifypeer = as.integer(dbc@ssl_verifypeer))
-    )
+    req <- httr2::req_body_raw(req, body = qbody)
   }
+
+  if (dbc@reset_handle) {
+    req <- httr2::req_options(req, fresh_connect = TRUE)
+  }
+
+  httr2::req_perform(req)
 }
 
 .query_success <- function(r) {
-  if (
-    r$status_code >= 300 ||
-      !is.null(r$headers$`x-clickhouse-exception-code`)
-  ) {
-    if (!is.null(r$headers$`x-clickhouse-exception-code`)) {
-      m <- rawToChar(r$content)
+  exc <- httr2::resp_header(r, "x-clickhouse-exception-code")
+  if (httr2::resp_status(r) >= 300 || !is.null(exc)) {
+    if (!is.null(exc)) {
+      m <- rawToChar(httr2::resp_body_raw(r))
     } else {
       m <- sprintf(
         "Connection error. Status code: %s",
-        r$status_code
+        httr2::resp_status(r)
       )
     }
     toRet <- FALSE
@@ -826,7 +831,7 @@ setMethod(
   )
   toRet <- .query_success(r)
   if (toRet) {
-    attr(toRet, "user") <- sub("\n$", "", rawToChar(r$content))
+    attr(toRet, "user") <- sub("\n$", "", rawToChar(httr2::resp_body_raw(r)))
   }
   return(toRet)
 }

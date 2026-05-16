@@ -44,8 +44,8 @@ The following R packages available on CRAN are required:
 - [methods](https://CRAN.R-project.org/package=methods): Formal Methods
   and Classes
 - [DBI](https://CRAN.R-project.org/package=DBI): R Database Interface
-- [httr](https://CRAN.R-project.org/package=httr): Tools for Working
-  with URLs and HTTP
+- [httr2](https://CRAN.R-project.org/package=httr2): Perform HTTP
+  Requests and Process the Responses
 - [jsonlite](https://CRAN.R-project.org/package=jsonlite): A Simple and
   Robust JSON Parser and Generator for R
 - [arrow](https://CRAN.R-project.org/package=arrow): Integration to

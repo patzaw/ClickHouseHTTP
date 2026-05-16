@@ -64,8 +64,10 @@ ClickHouseHTTP <- function() {
 #' @param extended_headers a named list with other HTTP headers
 #' (for example: `extended_headers=list("X-Authorization"="Bearer <token>")`
 #' can be used for OAuth access delegation)
-#' @param reset_handle a logical indicating how to manage Curl handles
-#' (see [httr::handle_pool]). If TRUE, handle reset is used (default: FALSE).
+#' @param reset_handle a logical indicating whether to force a fresh TCP
+#' connection for each request (httr2 `fresh_connect` curl option).
+#' If TRUE, connections are never reused from the pool, which can help in
+#' long-running sessions where stale connections cause errors (default: FALSE).
 #' @param settings list of
 #' [Clickhouse
 #' settings](https://clickhouse.com/docs/en/operations/settings/settings/)

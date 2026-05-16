@@ -1,7 +1,7 @@
 Package: ClickHouseHTTP
 Type: Package
 Title: A Simple HTTP Database Interface to 'ClickHouse'
-Version: 0.3.5
+Version: 0.99.0
 Authors@R: c(
     person(
         "Patrice", "Godard",
@@ -22,11 +22,11 @@ Description: 'ClickHouse' (<https://clickhouse.com/>)
 URL: https://github.com/patzaw/ClickHouseHTTP
 BugReports: https://github.com/patzaw/ClickHouseHTTP/issues
 Depends:
-   R (>= 3.6)
+   R (>= 4.1)
 Imports:
    methods,
    DBI (>= 0.3.0),
-   httr,
+   httr2,
    jsonlite,
    arrow,
    data.table,
