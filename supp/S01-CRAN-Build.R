@@ -22,4 +22,4 @@ system(paste(
   sprintf("R CMD check --as-cran ClickHouseHTTP_%s.tar.gz", pv),
   sep = " ; "
 ))
-install.packages(here(sprintf("../ClickHouseHTTP_%s.tar.gz", pv)), repos=NULL)
+install.packages(here(sprintf("../ClickHouseHTTP_%s.tar.gz", pv)), repos = NULL)
