@@ -263,7 +263,93 @@ setMethod(
 )
 
 ###############################################################################@
+## dbColumnInfo ----
+##
+setMethod(
+  "dbColumnInfo",
+  "ClickHouseHTTPResult",
+  function(res, ...) {
+    if (length(res@env$content) == 0) {
+      return(data.frame(
+        name = character(), type = character(),
+        stringsAsFactors = FALSE
+      ))
+    }
+    if (res@format == "Arrow") {
+      af <- arrow::read_feather(res@env$content, as_data_frame = FALSE)
+      rs <- af$schema
+      rsl <- .sch_cast(rs, convert_uint = res@conn@convert_uint)
+      final_schema <- rsl[[length(rsl)]]
+      col_names <- sapply(final_schema$fields, function(x) x$name)
+      col_types <- sapply(final_schema$fields, function(x) .arrow_type_to_r(x$type))
+      return(data.frame(
+        name = col_names, type = col_types,
+        stringsAsFactors = FALSE
+      ))
+    }
+    if (res@format == "TabSeparatedWithNamesAndTypes") {
+      l <- try(rawToChar(res@env$content), silent = TRUE)
+      if (inherits(l, "try-error")) {
+        tmpf <- tempfile()
+        on.exit(file.remove(tmpf))
+        writeBin(res@env$content, con = tmpf)
+        ctypes <- data.table::fread(
+          file = tmpf,
+          header = TRUE, sep = "\t",
+          colClasses = "character",
+          nrows = 1, stringsAsFactors = FALSE, quote = ""
+        )
+      } else {
+        ctypes <- data.table::fread(
+          text = l,
+          header = TRUE, sep = "\t",
+          colClasses = "character",
+          nrows = 1, stringsAsFactors = FALSE, quote = ""
+        )
+      }
+      chClasses <- as.character(t(ctypes))
+      chType <- sub("^.*[(]", "", sub("[)].*$", "", chClasses))
+      rType <- ifelse(
+        grepl("DateTime", chType), "POSIXct",
+        ifelse(grepl("Date", chType), "Date",
+        ifelse(grepl("Float", chType), "numeric",
+        ifelse(grepl("Decimal", chType), "numeric",
+        ifelse(chType == "UInt8" & res@conn@convert_uint, "logical",
+        ifelse(grepl("Int64", chType), "integer64",
+        ifelse(grepl("String", chType), "character",
+        ifelse(grepl("UUID", chType), "character",
+        ifelse(grepl("Int", chType), "integer",
+        "character"
+      )))))))))
+      return(data.frame(
+        name = colnames(ctypes), type = rType,
+        stringsAsFactors = FALSE
+      ))
+    }
+  }
+)
+
+###############################################################################@
 ## Helpers ----
+
+### Arrow type to R type ----
+.arrow_type_to_r <- function(type) {
+  if (inherits(type, "ListType")) return("list")
+  if (inherits(type, "Boolean")) return("logical")
+  if (inherits(type, c("Date32", "Date64"))) return("Date")
+  if (inherits(type, "Timestamp")) return("POSIXct")
+  if (inherits(type, c("Int8", "Int16", "Int32", "UInt8", "UInt16", "UInt32"))) {
+    return("integer")
+  }
+  if (inherits(type, c("Int64", "UInt64"))) return("integer64")
+  if (inherits(type, c("Float32", "Float64", "Decimal128", "Decimal256"))) {
+    return("numeric")
+  }
+  if (inherits(type, c("Utf8", "LargeUtf8", "Binary", "LargeBinary"))) {
+    return("character")
+  }
+  return("character")
+}
 
 ### Arrow cast ----
 .at_cast <- function(at, convert_uint = TRUE) {

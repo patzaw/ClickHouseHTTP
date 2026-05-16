@@ -1,5 +1,15 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+## Version 0.99.1
+
+- Implemented `dbColumnInfo()` for `ClickHouseHTTPResult`: returns a
+  data frame with `name` and `type` columns describing the R types of a
+  query result. Works for both `Arrow` and `TabSeparatedWithNamesAndTypes`
+  formats by parsing the buffered response content without consuming the
+  result cursor, so `dbFetch()` can still be called afterwards.
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 ## Version 0.99.0
 
 - Migrated HTTP backend from `httr` to `httr2`: all requests are now built
