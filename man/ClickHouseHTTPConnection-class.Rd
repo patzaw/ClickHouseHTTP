@@ -417,5 +417,5 @@ dbReadTable(con, SQL("default.mtcars"))
 }
 }
 \seealso{
-\linkS4class{ClickHouseHTTPResult}
+\link[=ClickHouseHTTPResult-class]{ClickHouseHTTPResult}
 }

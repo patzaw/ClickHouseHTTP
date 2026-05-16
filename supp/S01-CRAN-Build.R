@@ -2,6 +2,14 @@ library(here)
 library(rmarkdown)
 
 ##############################@
+## Build documentation ----
+devtools::document(
+  pkg = here::here(),
+  roclets = c('rd', 'collate', 'namespace')
+)
+install.packages(here::here(), repos = NULL)
+
+##############################@
 ## Build and copy vignettes ----
 rmarkdown::render(here("README.Rmd"))
 
@@ -14,4 +22,4 @@ system(paste(
   sprintf("R CMD check --as-cran ClickHouseHTTP_%s.tar.gz", pv),
   sep = " ; "
 ))
-# install.packages(here(sprintf("../ClickHouseHTTP_%s.tar.gz", pv)), repos=NULL)
+install.packages(here(sprintf("../ClickHouseHTTP_%s.tar.gz", pv)), repos=NULL)

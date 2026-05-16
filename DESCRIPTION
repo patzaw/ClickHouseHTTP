@@ -39,4 +39,4 @@ Suggests:
 Roxygen: list(markdown = TRUE)
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+Config/roxygen2/version: 8.0.0

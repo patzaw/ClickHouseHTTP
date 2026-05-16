@@ -67,8 +67,10 @@ in \link{dbSendQuery,ClickHouseHTTPConnection,character-method})
 (for example: \code{extended_headers=list("X-Authorization"="Bearer <token>")}
 can be used for OAuth access delegation)}
 
-\item{reset_handle}{a logical indicating how to manage Curl handles
-(see \link[httr:handle_pool]{httr::handle_pool}). If TRUE, handle reset is used (default: FALSE).}
+\item{reset_handle}{a logical indicating whether to force a fresh TCP
+connection for each request (httr2 \code{fresh_connect} curl option).
+If TRUE, connections are never reused from the pool, which can help in
+long-running sessions where stale connections cause errors (default: FALSE).}
 
 \item{settings}{list of
 \href{https://clickhouse.com/docs/en/operations/settings/settings/}{Clickhouse settings}}
@@ -158,5 +160,5 @@ dbReadTable(con, SQL("default.mtcars"))
 }
 }
 \seealso{
-\linkS4class{ClickHouseHTTPConnection}
+\link[=ClickHouseHTTPConnection-class]{ClickHouseHTTPConnection}
 }

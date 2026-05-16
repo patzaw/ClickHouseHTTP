@@ -13,5 +13,5 @@ A ClickHouseHTTPDriver
 Create a ClickHouseHTTP DBI driver
 }
 \seealso{
-\linkS4class{ClickHouseHTTPDriver}
+\link[=ClickHouseHTTPDriver-class]{ClickHouseHTTPDriver}
 }
