@@ -1,6 +1,6 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-## Version 0.99.1
+## Version 1.0.0
 
 - Implemented `dbColumnInfo()` for `ClickHouseHTTPResult`: returns a
   data frame with `name` and `type` columns describing the R types of a

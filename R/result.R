@@ -422,7 +422,9 @@ setMethod(
   ## date32/timestamp. We need an intermediate int32/int64 cast first.
   ## This function returns the intermediate type for that first step.
   if (inherits(at, "ListType")) {
-    return(arrow::list_of(.at_intermediate(at$value_type)))
+    inner <- .at_intermediate(at$value_type)
+    if (is.null(inner)) return(NULL)
+    return(arrow::list_of(inner))
   }
   if (inherits(at, "UInt16")) {
     return(arrow::int32())

@@ -1,11 +1,11 @@
 Package: ClickHouseHTTP
 Type: Package
 Title: A Simple HTTP Database Interface to 'ClickHouse'
-Version: 0.99.1
+Version: 1.0.0
 Authors@R: c(
     person(
         "Patrice", "Godard",
-        role = c("aut", "cre","cph"),
+        role = c("aut", "cre", "cph"),
         email = "patrice.godard@gmail.com"
     ),
     person(

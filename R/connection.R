@@ -495,13 +495,13 @@ setMethod(
 #' @param conn a ClickHouseHTTPConnection object created
 #' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the name of the table to create
-#' @param database the database to consider. If NA (default), the default
-#' database or  the one in use in the session (if a session is defined).
 #' @param fields a character vector with the name of the fields and their
 #' ClickHouse type
 #' (e.g.
 #' `c("text_col String", "num_col Nullable(Float64)", "nul_col Array(Int32)")`
 #' )
+#' @param database the database to consider. If NA (default), the default
+#' database or  the one in use in the session (if a session is defined).
 #' @param engine the ClickHouse table engine as described in ClickHouse
 #' [documentation](https://clickhouse.com/docs/en/engines/table-engines/).
 #' Examples:
@@ -528,8 +528,8 @@ setMethod(
   function(
     conn,
     name,
-    database = NA,
     fields,
+    database = NA,
     engine = "TinyLog",
     overwrite = FALSE,
     ...,
@@ -567,9 +567,9 @@ setMethod(
 #' @param conn a ClickHouseHTTPConnection object created
 #' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the table name
+#' @param value a data.frame
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
-#' @param value a data.frame
 #' @param row.names unsupported parameter (add for compatibility reason)
 #' @param ... Other parameters passed on to methods
 #'
@@ -583,8 +583,8 @@ setMethod(
   function(
     conn,
     name,
-    database = NA,
     value,
+    database = NA,
     ...,
     row.names = NULL
   ) {
@@ -610,9 +610,9 @@ setMethod(
 #' @param conn a ClickHouseHTTPConnection object created
 #' with [`dbConnect()`][ClickHouseHTTPDriver-class]
 #' @param name the name of the table to create
+#' @param value a data.frame
 #' @param database the database to consider. If NA (default), the default
 #' database or  the one in use in the session (if a session is defined).
-#' @param value a data.frame
 #' @param overwrite if TRUE and if a table with the same name exists,
 #' then it is deleted before creating the new one (default: FALSE)
 #' @param append if TRUE, the values are added to the database table if
@@ -639,8 +639,8 @@ setMethod(
   function(
     conn,
     name,
-    database = NA,
     value,
+    database = NA,
     overwrite = FALSE,
     append = FALSE,
     engine = "TinyLog",

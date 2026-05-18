@@ -38,8 +38,8 @@
 \S4method{dbCreateTable}{ClickHouseHTTPConnection}(
   conn,
   name,
-  database = NA,
   fields,
+  database = NA,
   engine = "TinyLog",
   overwrite = FALSE,
   ...,
@@ -47,13 +47,13 @@
   temporary = FALSE
 )
 
-\S4method{dbAppendTable}{ClickHouseHTTPConnection}(conn, name, database = NA, value, ..., row.names = NULL)
+\S4method{dbAppendTable}{ClickHouseHTTPConnection}(conn, name, value, database = NA, ..., row.names = NULL)
 
 \S4method{dbWriteTable}{ClickHouseHTTPConnection,ANY}(
   conn,
   name,
-  database = NA,
   value,
+  database = NA,
   overwrite = FALSE,
   append = FALSE,
   engine = "TinyLog",
