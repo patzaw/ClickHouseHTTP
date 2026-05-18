@@ -130,7 +130,7 @@ selCars <- dbGetQuery(
   format = "TabSeparatedWithNamesAndTypes"
 )
 ## Identifying the original ClickHouse data types
-attr(selCars, "type")
+attr(selCars, "types")
 
 ## Using alternative databases stored in ClickHouse ----
 

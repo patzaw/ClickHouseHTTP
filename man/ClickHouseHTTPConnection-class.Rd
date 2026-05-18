@@ -135,7 +135,7 @@ A vector of character with column names.
 
 dbCreateTable() returns TRUE, invisibly.
 
-\code{invisible(TRUE)}
+The number of rows written, invisibly.
 
 TRUE; called for side effects
 }
@@ -243,7 +243,7 @@ selCars <- dbGetQuery(
   format = "TabSeparatedWithNamesAndTypes"
 )
 ## Identifying the original ClickHouse data types
-attr(selCars, "type")
+attr(selCars, "types")
 
 ## Using alternative databases stored in ClickHouse ----
 
@@ -315,7 +315,7 @@ selCars <- dbGetQuery(
   format = "TabSeparatedWithNamesAndTypes"
 )
 ## Identifying the original ClickHouse data types
-attr(selCars, "type")
+attr(selCars, "types")
 
 ## Using alternative databases stored in ClickHouse ----
 
@@ -387,7 +387,7 @@ selCars <- dbGetQuery(
   format = "TabSeparatedWithNamesAndTypes"
 )
 ## Identifying the original ClickHouse data types
-attr(selCars, "type")
+attr(selCars, "types")
 
 ## Using alternative databases stored in ClickHouse ----
 

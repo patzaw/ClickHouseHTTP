@@ -156,7 +156,7 @@ setMethod(
                 ),
                 silent = TRUE
               )
-              for (i in 1:ncol(toRet)) {
+              for (i in seq_len(ncol(toRet))) {
                 toRet[[i]] <- cast_type(rType[i], toRet[[i]])
               }
             } else {
@@ -194,7 +194,7 @@ setMethod(
                 ),
                 silent = TRUE
               )
-              for (i in 1:ncol(toRet)) {
+              for (i in seq_len(ncol(toRet))) {
                 toRet[[i]] <- cast_type(rType[i], toRet[[i]])
               }
             } else {
@@ -423,7 +423,9 @@ setMethod(
   ## This function returns the intermediate type for that first step.
   if (inherits(at, "ListType")) {
     inner <- .at_intermediate(at$value_type)
-    if (is.null(inner)) return(NULL)
+    if (is.null(inner)) {
+      return(NULL)
+    }
     return(arrow::list_of(inner))
   }
   if (inherits(at, "UInt16")) {
@@ -474,7 +476,7 @@ setMethod(
 .af_cast <- function(af, convert_uint = TRUE) {
   rs <- af$schema
   rsl <- .sch_cast(rs, convert_uint = convert_uint)
-  for (i in 1:length(rsl)) {
+  for (i in seq_along(rsl)) {
     af <- af$cast(rsl[[i]])
   }
   return(af)

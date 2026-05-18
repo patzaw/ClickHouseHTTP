@@ -132,6 +132,19 @@ attr(selCars, "type")
 
 ### Using alternative databases stored in ClickHouse
 
+It’s only possible when sessions are activated with the `use_session`
+param.
+
+``` r
+library(DBI)
+con <- dbConnect(
+  ClickHouseHTTP::ClickHouseHTTP(),
+  host = "localhost",
+  port = 8123,
+  use_session = TRUE
+)
+```
+
 ``` r
 dbSendQuery(con, "CREATE DATABASE swiss")
 dbSendQuery(con, "USE swiss")
@@ -149,12 +162,13 @@ data("swiss")
 swiss <- as_tibble(swiss, rownames = "province")
 swiss <- mutate(swiss, "pr letters" = strsplit(province, ""))
 dbWriteTable(
-  con,
-  "swiss",
-  swiss,
+  conn = con,
+  name = "swiss",
+  value = swiss,
   engine = "MergeTree() ORDER BY (Fertility, province)"
 )
-swissFromDB <- dbReadTable(con, "swiss")
+swissFromDB <- dbReadTable(con, "swiss") |> 
+  as_tibble()
 ```
 
 A table from another database can also be accessed as following:
@@ -168,31 +182,58 @@ dbReadTable(con, SQL("default.mtcars"))
 ### Configuration
 
 ``` sh
-CH_HOME=~/Documents/Projects/Test_CH
+CH_VERSION=26.3.9.8
+CH_HOME=~/Documents/Projects/Tests/Test_CH
 mkdir -p $CH_HOME
 mkdir -p ${CH_HOME}/data
 mkdir -p ${CH_HOME}/conf
 mkdir -p ${CH_HOME}/log
-```
 
-Configuration files are shared in the `supp/ClickHouse-Conf-Files`
-folder in this repository.
+docker create --name temp_ch clickhouse/clickhouse-server:$CH_VERSION
+docker cp temp_ch:/etc/clickhouse-server/. ${CH_HOME}/conf/
+docker stop temp_ch
+docker rm temp_ch
+docker volume prune -f
 
-``` sh
-cp supp/ClickHouse-Conf-Files/users.xml ${CH_HOME}/conf/
-cp supp/ClickHouse-Conf-Files/config.xml ${CH_HOME}/conf/
+echo '
+<clickhouse>
+    <users>
+        <default>
+            <password></password>
+        </default>
+    </users>
+</clickhouse>
+' > ${CH_HOME}/conf/users.d/default-password.xml
 ```
 
 ### SSL certificate
 
 ``` sh
 openssl req -subj "/CN=localhost" -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout ${CH_HOME}/conf/server.key -out ${CH_HOME}/conf/server.crt
-openssl dhparam -out ${CH_HOME}/conf/dhparam.pem 4096
+openssl dhparam -out ${CH_HOME}/conf/dhparam.pem 2048
+
+echo '
+<clickhouse>
+    <https_port>8443</https_port>
+    <openSSL>
+        <server>
+            <certificateFile>/etc/clickhouse-server/server.crt</certificateFile>
+            <privateKeyFile>/etc/clickhouse-server/server.key</privateKeyFile>
+            <dhParamsFile>/etc/clickhouse-server/dhparam.pem</dhParamsFile>
+            <verificationMode>none</verificationMode>
+            <loadDefaultCAFile>true</loadDefaultCAFile>
+            <cacheSessions>true</cacheSessions>
+            <disableProtocols>sslv2,sslv3</disableProtocols>
+            <preferServerCiphers>true</preferServerCiphers>
+        </server>
+    </openSSL>
+</clickhouse>
+' > ${CH_HOME}/conf/config.d/ssl.xml
 ```
 
 ### Container
 
-The following ports are supported in the shared `config.xml` file:
+The following ports are supported:
 
 - 9000: Native TCP interface (not used by ClickHouseHTTP)
 - 9440: Native TCP interface wrapped in TLS (not used by ClickHouseHTTP)
@@ -203,18 +244,14 @@ The following ports are supported in the shared `config.xml` file:
 chmod -R a+rwx ${CH_HOME}
 docker run -d --name Test_CH \
     --ulimit nofile=262144:262144 \
-    --volume ${CH_HOME}/data:/var/lib/clickhouse \
     --publish=9000:9000 \
     --publish=9440:9440 \
     --publish=8123:8123 \
     --publish=8443:8443 \
-    --volume ${CH_HOME}/conf/users.xml:/etc/clickhouse-server/users.xml \
-    --volume ${CH_HOME}/conf/config.xml:/etc/clickhouse-server/config.xml \
-    --volume ${CH_HOME}/conf/server.crt:/etc/clickhouse-server/server.crt \
-    --volume ${CH_HOME}/conf/server.key:/etc/clickhouse-server/server.key \
-    --volume ${CH_HOME}/conf/dhparam.pem:/etc/clickhouse-server/dhparam.pem \
+    --volume ${CH_HOME}/data:/var/lib/clickhouse \
+    --volume ${CH_HOME}/conf:/etc/clickhouse-server \
     --volume ${CH_HOME}/log:/var/log/clickhouse-server \
-    clickhouse/clickhouse-server:22.2.3.5
+    clickhouse/clickhouse-server:$CH_VERSION
 ```
 
 # Alternatives
@@ -230,5 +267,5 @@ docker run -d --name Test_CH \
 
 # Acknowledgments
 
-This work was entirely supported by [UCB Pharma](https://www.ucb.com/)
-(Early Solutions department).
+This work was supported by [UCB Pharma](https://www.ucb.com/) (Early
+Solutions department).

@@ -181,7 +181,7 @@ setMethod(
     toRet@user <- attr(v, "user")
 
     ## Set default db
-    DBI::dbSendQuery(toRet, sprintf("USE `%s`", dbname))
+    DBI::dbSendQuery(toRet, paste("USE", DBI::dbQuoteIdentifier(toRet, dbname)))
     DBI::dbSendQuery(toRet, "SET send_progress_in_http_headers=1")
 
     return(toRet)

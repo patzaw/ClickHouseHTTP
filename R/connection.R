@@ -123,7 +123,6 @@ setMethod(
     ...
   ) {
     format <- match.arg(format)
-    resEnv <- new.env(parent = emptyenv())
     query <- statement
     if (
       length(grep(
@@ -573,7 +572,7 @@ setMethod(
 #' @param row.names unsupported parameter (add for compatibility reason)
 #' @param ... Other parameters passed on to methods
 #'
-#' @return `invisible(TRUE)`
+#' @return The number of rows written, invisibly.
 #'
 #' @rdname ClickHouseHTTPConnection-class
 #'

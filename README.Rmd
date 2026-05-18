@@ -243,7 +243,7 @@ The following ports are supported:
 - 8123: HTTP interface
 - 8443: HTTPS interface
 
-```{sh}
+```{sh, eval=FALSE}
 chmod -R a+rwx ${CH_HOME}
 docker run -d --name Test_CH \
 	--ulimit nofile=262144:262144 \
