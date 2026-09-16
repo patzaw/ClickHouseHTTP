@@ -1,7 +1,13 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-## Version 1.0.0
+## Version 1.1.0
 
+- Arrow timestamp conversion now uses the `session_timezone` connection setting.
+- Tab-separated DateTime values now match Arrow timestamps when `session_timezone` is not defined.
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+## Version 1.0.0
 - Implemented `dbColumnInfo()` for `ClickHouseHTTPResult`: returns a
   data frame with `name` and `type` columns describing the R types of a
   query result. Works for both `Arrow` and `TabSeparatedWithNamesAndTypes`
