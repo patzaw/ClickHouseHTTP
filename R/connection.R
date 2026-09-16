@@ -104,6 +104,12 @@ setMethod(
 #'       }
 #' }
 #'
+#' @note Time zones: `toTimeZone()` calls in SQL queries are ignored when
+#' `format = "Arrow"` and are not correctly interpreted when
+#' `format = "TabSeparatedWithNamesAndTypes"`. It is preferable to set the
+#' time zone through the `settings` parameter of [DBI::dbConnect()], for
+#' example `settings = list(session_timezone = "CET")`.
+#'
 #' @example supp/examples/global-example.R
 #'
 #' @seealso [ClickHouseHTTPResult-class]
@@ -133,7 +139,7 @@ setMethod(
       )) ==
         1
     ) {
-      query = paste(query, "FORMAT", format)
+      query <- paste(query, "FORMAT", format)
     }
     r <- .send_query(
       dbc = conn,

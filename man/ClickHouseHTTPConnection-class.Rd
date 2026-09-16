@@ -198,6 +198,13 @@ below can be useful but can also take time.
       }
 }
 }
+\note{
+Time zones: \code{toTimeZone()} calls in SQL queries are ignored when
+\code{format = "Arrow"} and are not correctly interpreted when
+\code{format = "TabSeparatedWithNamesAndTypes"}. It is preferable to set the
+time zone through the \code{settings} parameter of \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, for
+example \code{settings = list(session_timezone = "CET")}.
+}
 \examples{
 \dontrun{
 ## Connection ----
