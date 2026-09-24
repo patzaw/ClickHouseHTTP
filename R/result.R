@@ -66,7 +66,11 @@ setMethod(
           )
         }
         chClasses <- as.character(t(ctypes))
-        chType <- sub("^.*[(]", "", sub("[)].*$", "", chClasses))
+        chType <- ifelse(
+          grepl("DateTime", chClasses),
+          "DateTime",
+          sub("^.*[(]", "", sub("[)].*$", "", chClasses))
+        )
         chArray <- grepl("Array[(].*[)]", chClasses)
         rType <-
           ifelse(
@@ -107,7 +111,13 @@ setMethod(
             )
           )
         session_timezone <- .session_timezone(res@conn@settings)
-        cast_type <- function(type, x) {
+        col_tz <- .type_timezone(chClasses)
+        effective_tz <- ifelse(
+          !is.na(col_tz),
+          col_tz,
+          ifelse(is.null(session_timezone), NA_character_, session_timezone)
+        )
+        cast_type <- function(type, x, tz = NA_character_) {
           switch(
             type,
             "integer" = as.integer(x),
@@ -115,12 +125,12 @@ setMethod(
             "logical" = as.logical(x),
             "character" = as.character(x),
             "Date" = as.Date(x),
-            "POSIXct" = if (is.null(session_timezone)) {
+            "POSIXct" = if (is.na(tz)) {
               y <- as.POSIXct(x, tz = "UTC")
               attr(y, "tzone") <- NULL
               y
             } else {
-              as.POSIXct(x, tz = session_timezone)
+              as.POSIXct(x, tz = tz)
             },
             "integer64" = as(x, "integer64")
           )
@@ -166,7 +176,11 @@ setMethod(
                 silent = TRUE
               )
               for (i in seq_len(ncol(toRet))) {
-                toRet[[i]] <- cast_type(rType[i], toRet[[i]])
+                toRet[[i]] <- cast_type(
+                  rType[i],
+                  toRet[[i]],
+                  tz = effective_tz[i]
+                )
               }
             } else {
               stop(as.character(toRet))
@@ -204,7 +218,11 @@ setMethod(
                 silent = TRUE
               )
               for (i in seq_len(ncol(toRet))) {
-                toRet[[i]] <- cast_type(rType[i], toRet[[i]])
+                toRet[[i]] <- cast_type(
+                  rType[i],
+                  toRet[[i]],
+                  tz = effective_tz[i]
+                )
               }
             } else {
               stop(as.character(toRet))
@@ -212,13 +230,13 @@ setMethod(
           }
         }
         for (i in which(rType == "POSIXct" & !chArray)) {
-          toRet[[i]] <- cast_type(rType[i], toRet[[i]])
+          toRet[[i]] <- cast_type(rType[i], toRet[[i]], tz = effective_tz[i])
         }
         for (i in which(chArray)) {
           toRet[[i]] <- .split_txt_array(
             toRet[[i]],
             type = rType[i],
-            session_timezone = session_timezone
+            tz = effective_tz[i]
           )
         }
         colnames(toRet) <- colnames(ctypes)
@@ -338,7 +356,11 @@ setMethod(
         )
       }
       chClasses <- as.character(t(ctypes))
-      chType <- sub("^.*[(]", "", sub("[)].*$", "", chClasses))
+      chType <- ifelse(
+        grepl("DateTime", chClasses),
+        "DateTime",
+        sub("^.*[(]", "", sub("[)].*$", "", chClasses))
+      )
       rType <- ifelse(
         grepl("DateTime", chType),
         "POSIXct",
@@ -545,7 +567,7 @@ setMethod(
 }
 
 ### Array from text ----
-.split_txt_array <- function(x, type, session_timezone = NULL) {
+.split_txt_array <- function(x, type, tz = NA_character_) {
   y <- gsub("(^[[]|[]]$)", "", x)
   y <- strsplit(y, split = ifelse(type == "character", "','", ","))
   y <- lapply(y, function(z) sub("(^'|'$)", "", z))
@@ -553,18 +575,35 @@ setMethod(
     y <- lapply(y, as.Date)
   }
   if (type == "POSIXct") {
-    y <- if (is.null(session_timezone)) {
+    y <- if (is.na(tz)) {
       lapply(y, function(x) {
         z <- as.POSIXct(x, tz = "UTC")
         attr(z, "tzone") <- NULL
         z
       })
     } else {
-      lapply(y, as.POSIXct, tz = session_timezone)
+      lapply(y, as.POSIXct, tz = tz)
     }
   }
   if (!type %in% c("character", "Date", "POSIXct")) {
     y <- lapply(y, as, class = type)
   }
   return(y)
+}
+
+### Extract explicit timezone from a ClickHouse type string ----
+## e.g. "DateTime('Europe/Paris')" or "Nullable(DateTime64(3, 'UTC'))".
+## The quotes may come back backslash-escaped (e.g. "DateTime(\'UTC\')") since
+## this is parsed out of the raw TSV header line rather than actual TSV data.
+.type_timezone <- function(chClasses) {
+  pattern <- "\\\\?'([^'\\\\]*)\\\\?'"
+  vapply(
+    chClasses,
+    function(s) {
+      m <- regmatches(s, regexec(pattern, s))[[1]]
+      if (length(m) < 2) NA_character_ else m[2]
+    },
+    character(1),
+    USE.NAMES = FALSE
+  )
 }

@@ -1,8 +1,15 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+## Version 1.1.1
+
+- Fixed timezone-qualified DateTime columns being reported as unsupported with `format = "TabSeparatedWithNamesAndTypes"`.
+- `format = "TabSeparatedWithNamesAndTypes"` now uses the timezone embedded in a column's type (e.g. `DateTime('Europe/Paris')`) when present, falling back to the `session_timezone` connection setting otherwise.
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 ## Version 1.1.0
 
-- Arrow timestamp conversion now uses the `session_timezone` connection setting.
+- Arrow timestamp conversion now uses the `session_timezone` connection setting (#6).
 - Tab-separated DateTime values now match Arrow timestamps when `session_timezone` is not defined.
 
 <!----------------------------------------------------------------------------->
