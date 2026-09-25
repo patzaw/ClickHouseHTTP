@@ -62,8 +62,16 @@ And those are suggested:
   Documents for R
 - [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
   Manipulation
+- [dbplyr](https://CRAN.R-project.org/package=dbplyr): A ‘dplyr’ Back
+  End for Databases
 - [stringi](https://CRAN.R-project.org/package=stringi): Fast and
   Portable Character String Processing Facilities
+- [stringr](https://CRAN.R-project.org/package=stringr): Simple,
+  Consistent Wrappers for Common String Operations
+- [testthat](https://CRAN.R-project.org/package=testthat): Unit Testing
+  for R
+- [withr](https://CRAN.R-project.org/package=withr): Run Code ‘With’
+  Temporarily Modified Global State
 
 ## From github
 

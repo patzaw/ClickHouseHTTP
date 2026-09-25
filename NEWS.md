@@ -1,5 +1,28 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+## Version 1.1.2
+
+- Declared support for dbplyr's 2nd edition interface (`dbplyr_edition()`),
+  fixing `dplyr::tbl()` and other dbplyr-based verbs which previously failed
+  with "uses dbplyr's 1st edition interface, which is no longer supported" [#7](https://github.com/patzaw/ClickHouseHTTP/issues/7).
+- Added a `sql_translation()` method so `as.character()`/`as.integer()`/
+  `as.numeric()`/`as.logical()`/`as.Date()`/`as.POSIXct()`, `^`,
+  `Sys.Date()`/`Sys.time()` and `sd()`/`var()` translate to ClickHouse's own
+  conversion/aggregate functions (`toString`, `toInt64`, `toFloat64`,
+  `toUInt8`, `toDate`, `toDateTime`, `pow`, `today`, `now`, `stddevSamp`,
+  `varSamp`) instead of dbplyr's ANSI defaults, which ClickHouse doesn't
+  recognize. (Implemented with Claude Code)
+- Added `sql_table_analyze()` (no-op, ClickHouse has no `ANALYZE`) and
+  `db_connection_describe()` (shows the ClickHouse server/version instead of
+  just the connection class name) dbplyr methods. (Implemented with Claude
+  Code)
+- Added a `testthat` suite auditing dbplyr/ClickHouse SQL compatibility:
+  offline SQL-rendering checks (no server needed) plus an opt-in live
+  round-trip suite (set `CLICKHOUSE_TEST_HOST` to run it against a real
+  server). (Implemented with Claude Code)
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 ## Version 1.1.1
 
 - Fixed timezone-qualified DateTime columns being reported as unsupported with `format = "TabSeparatedWithNamesAndTypes"`.
@@ -9,7 +32,7 @@
 <!----------------------------------------------------------------------------->
 ## Version 1.1.0
 
-- Arrow timestamp conversion now uses the `session_timezone` connection setting (#6).
+- Arrow timestamp conversion now uses the `session_timezone` connection setting [#6](https://github.com/patzaw/ClickHouseHTTP/issues/6).
 - Tab-separated DateTime values now match Arrow timestamps when `session_timezone` is not defined.
 
 <!----------------------------------------------------------------------------->
