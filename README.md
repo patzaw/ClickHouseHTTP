@@ -76,7 +76,7 @@ And those are suggested:
 ## From github
 
 ``` r
-pak::pak("patzaw/ClickHouseHTTP")
+pak::pkg_install("github::patzaw/ClickHouseHTTP")
 ```
 
 # Documentation

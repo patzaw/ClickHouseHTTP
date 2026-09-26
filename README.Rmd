@@ -72,7 +72,7 @@ for (p in wdeps$package) {
 ## From github
 
 ```{r, eval=FALSE}
-pak::pak("patzaw/ClickHouseHTTP")
+pak::pkg_install("github::patzaw/ClickHouseHTTP")
 ```
 
 # Documentation
