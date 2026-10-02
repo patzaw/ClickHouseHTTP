@@ -1,6 +1,8 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
 <url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/Setting-up-ClickHouse-docker.html</loc></url>
+<url><loc>/Usage.html</loc></url>
 <url><loc>/articles/Setting-up-ClickHouse-docker.html</loc></url>
 <url><loc>/articles/Usage.html</loc></url>
 <url><loc>/articles/index.html</loc></url>

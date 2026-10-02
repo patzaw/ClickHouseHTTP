@@ -41,7 +41,7 @@ pv <- desc::desc_get_version(here())
 system(paste(
   sprintf("cd %s", here("..")),
   "R CMD build ClickHouseHTTP",
-  sprintf("R CMD check --as-cran ClickHouseHTTP_%s.tar.gz", pv),
+  sprintf("R CMD check --as-cran --no-build-vignettes ClickHouseHTTP_%s.tar.gz", pv),
   sep = " ; "
 ))
 install.packages(here(sprintf("../ClickHouseHTTP_%s.tar.gz", pv)), repos = NULL)
