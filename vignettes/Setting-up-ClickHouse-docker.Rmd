@@ -1,0 +1,99 @@
+---
+title: "Setting up a ClickHouse database using docker"
+oauthor: "[Patrice Godard](mailto:patrice.godard@gmail.com?Subject=ClickHouseHTTP)"
+date: "`r format(Sys.time(), '%B %d %Y')`"
+always_allow_html: true
+output:
+  html_document:
+    keep_md: no
+    number_sections: yes
+    self_contained: yes
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    number_sections: yes
+package: ClickHouseHTTP (version `r packageVersion('ClickHouseHTTP')`)
+vignette: >
+   %\VignetteIndexEntry{Setting up a ClickHouse database using docker}
+   %\VignetteEncoding{UTF-8}
+   %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
+---
+
+# Configuration
+
+```{sh, eval=FALSE}
+CH_VERSION=26.3.9.8
+CH_HOME=~/Documents/Projects/Tests/Test_CH
+mkdir -p $CH_HOME
+mkdir -p ${CH_HOME}/data
+mkdir -p ${CH_HOME}/conf
+mkdir -p ${CH_HOME}/log
+
+docker create --name temp_ch clickhouse/clickhouse-server:$CH_VERSION
+docker cp temp_ch:/etc/clickhouse-server/. ${CH_HOME}/conf/
+docker stop temp_ch
+docker rm temp_ch
+docker volume prune -f
+
+echo '\n
+<clickhouse>
+    <users>
+        <default>
+            <password></password>
+        </default>
+    </users>
+</clickhouse>
+' > ${CH_HOME}/conf/users.d/default-password.xml
+```
+
+# SSL certificate
+
+```{sh, eval=FALSE}
+openssl req -subj "/CN=localhost" -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout ${CH_HOME}/conf/server.key -out ${CH_HOME}/conf/server.crt
+openssl dhparam -out ${CH_HOME}/conf/dhparam.pem 2048
+
+echo '\n
+<clickhouse>
+    <https_port>8443</https_port>
+    <openSSL>
+        <server>
+            <certificateFile>/etc/clickhouse-server/server.crt</certificateFile>
+            <privateKeyFile>/etc/clickhouse-server/server.key</privateKeyFile>
+            <dhParamsFile>/etc/clickhouse-server/dhparam.pem</dhParamsFile>
+            <verificationMode>none</verificationMode>
+            <loadDefaultCAFile>true</loadDefaultCAFile>
+            <cacheSessions>true</cacheSessions>
+            <disableProtocols>sslv2,sslv3</disableProtocols>
+            <preferServerCiphers>true</preferServerCiphers>
+        </server>
+    </openSSL>
+</clickhouse>
+' > ${CH_HOME}/conf/config.d/ssl.xml
+```
+
+# Container
+
+The following ports are supported:
+
+- 9000: Native TCP interface (not used by ClickHouseHTTP)
+- 9440: Native TCP interface wrapped in TLS (not used by ClickHouseHTTP)
+- 8123: HTTP interface
+- 8443: HTTPS interface
+
+```{sh, eval=FALSE}
+chmod -R a+rwx ${CH_HOME}
+docker run -d --name Test_CH \
+	--ulimit nofile=262144:262144 \
+	--publish=9000:9000 \
+	--publish=9440:9440 \
+	--publish=8123:8123 \
+	--publish=8443:8443 \
+	--volume ${CH_HOME}/data:/var/lib/clickhouse \
+	--volume ${CH_HOME}/conf:/etc/clickhouse-server \
+	--volume ${CH_HOME}/log:/var/log/clickhouse-server \
+	clickhouse/clickhouse-server:$CH_VERSION
+```

@@ -3,7 +3,7 @@ title: "README"
 output: 
   rmarkdown::github_document:
     number_sections: false
-    toc: true
+    toc: false
     toc_depth: 2
 editor_options: 
   chunk_output_type: console
@@ -22,6 +22,11 @@ cranRef <- function(x) {
   )
 }
 ```
+
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+# ClickHouseHTTP <img src="man/figures/logo.png" align="right" alt="logo" width="120" />
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
 [![](https://cranlogs.r-pkg.org/badges/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
@@ -77,184 +82,16 @@ pak::pkg_install("github::patzaw/ClickHouseHTTP")
 
 # Documentation
 
-## Usage
+For detailed guides on using ClickHouseHTTP, please refer to the following vignettes:
 
-### Connection
+- [Working with ClickHouse Databases Using ClickHouseHTTP](https://patzaw.github.io/ClickHouseHTTP/articles/Usage.html) 
 
-```{r, eval=FALSE}
-library(DBI)
-## HTTP connection
-con <- dbConnect(
-  ClickHouseHTTP::ClickHouseHTTP(),
-  host = "localhost",
-  port = 8123
-)
-## HTTPS connection (without ssl peer verification)
-con <- dbConnect(
-  ClickHouseHTTP::ClickHouseHTTP(),
-  host = "localhost",
-  port = 8443,
-  https = TRUE,
-  ssl_verifypeer = FALSE
-)
-```
+- [Setting up a ClickHouse database using docker](https://patzaw.github.io/ClickHouseHTTP/articles/Setting-up-ClickHouse-docker.html)
 
-### Write a table in the database
+To access vignettes from R, use:
 
 ```{r, eval=FALSE}
-library(dplyr)
-data("mtcars")
-mtcars <- as_tibble(mtcars, rownames = "car")
-dbWriteTable(con, "mtcars", mtcars)
-```
-
-### Query the database
-
-```{r, eval=FALSE}
-carsFromDB <- dbReadTable(con, "mtcars")
-dbGetQuery(con, "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110")
-```
-
-By default, ClickHouseHTTP relies on the
-[Apache `Arrow`](https://arrow.apache.org/) format provided by ClickHouse.
-However, as described in the
-[documentation](https://clickhouse.com/docs/en/interfaces/formats/#data-format-arrow),
-the following types are not supported in the current implementation of
-this format: *TIME32*, *FIXED_SIZE_BINARY*, *JSON*, *UUID*, *ENUM*.
-The `format` argument of the `dbGetQuery()` function can be used to
-rely on the *TabSeparatedWithNamesAndTypes* format.
-
-```{r, eval=FALSE}
-selCars <- dbGetQuery(
-  con,
-  "SELECT car, mpg, cyl, hp FROM mtcars WHERE hp>=110",
-  format = "TabSeparatedWithNamesAndTypes"
-)
-## Identifying the original ClickHouse data types
-attr(selCars, "type")
-```
-
-### Using alternative databases stored in ClickHouse
-
-It's only possible when sessions are activated with the `use_session` param.
-
-```{r, eval=FALSE}
-library(DBI)
-con <- dbConnect(
-  ClickHouseHTTP::ClickHouseHTTP(),
-  host = "localhost",
-  port = 8123,
-  use_session = TRUE
-)
-```
-
-```{r, eval=FALSE}
-dbSendQuery(con, "CREATE DATABASE swiss")
-dbSendQuery(con, "USE swiss")
-```
-
-The chosen database is used until the session expires.
-It can also be chosen when connecting using the `dbname` argument of
-the `dbConnect()` function.
-
-The example below shows that spaces in column names are supported.
-It also shows the support of R `list` using the *Array* ClickHouse type.
-
-```{r, eval=FALSE}
-data("swiss")
-swiss <- as_tibble(swiss, rownames = "province")
-swiss <- mutate(swiss, "pr letters" = strsplit(province, ""))
-dbWriteTable(
-  conn = con,
-  name = "swiss",
-  value = swiss,
-  engine = "MergeTree() ORDER BY (Fertility, province)"
-)
-swissFromDB <- dbReadTable(con, "swiss") |> 
-  as_tibble()
-```
-
-A table from another database can also be accessed as following:
-
-```{r, eval=FALSE}
-dbReadTable(con, SQL("default.mtcars"))
-```
-
-## Setting up a ClickHouse database using docker
-
-### Configuration
-
-```{sh, eval=FALSE}
-CH_VERSION=26.3.9.8
-CH_HOME=~/Documents/Projects/Tests/Test_CH
-mkdir -p $CH_HOME
-mkdir -p ${CH_HOME}/data
-mkdir -p ${CH_HOME}/conf
-mkdir -p ${CH_HOME}/log
-
-docker create --name temp_ch clickhouse/clickhouse-server:$CH_VERSION
-docker cp temp_ch:/etc/clickhouse-server/. ${CH_HOME}/conf/
-docker stop temp_ch
-docker rm temp_ch
-docker volume prune -f
-
-echo '
-<clickhouse>
-    <users>
-        <default>
-            <password></password>
-        </default>
-    </users>
-</clickhouse>
-' > ${CH_HOME}/conf/users.d/default-password.xml
-```
-
-### SSL certificate
-
-```{sh, eval=FALSE}
-openssl req -subj "/CN=localhost" -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout ${CH_HOME}/conf/server.key -out ${CH_HOME}/conf/server.crt
-openssl dhparam -out ${CH_HOME}/conf/dhparam.pem 2048
-
-echo '
-<clickhouse>
-    <https_port>8443</https_port>
-    <openSSL>
-        <server>
-            <certificateFile>/etc/clickhouse-server/server.crt</certificateFile>
-            <privateKeyFile>/etc/clickhouse-server/server.key</privateKeyFile>
-            <dhParamsFile>/etc/clickhouse-server/dhparam.pem</dhParamsFile>
-            <verificationMode>none</verificationMode>
-            <loadDefaultCAFile>true</loadDefaultCAFile>
-            <cacheSessions>true</cacheSessions>
-            <disableProtocols>sslv2,sslv3</disableProtocols>
-            <preferServerCiphers>true</preferServerCiphers>
-        </server>
-    </openSSL>
-</clickhouse>
-' > ${CH_HOME}/conf/config.d/ssl.xml
-```
-
-### Container
-
-The following ports are supported:
-
-- 9000: Native TCP interface (not used by ClickHouseHTTP)
-- 9440: Native TCP interface wrapped in TLS (not used by ClickHouseHTTP)
-- 8123: HTTP interface
-- 8443: HTTPS interface
-
-```{sh, eval=FALSE}
-chmod -R a+rwx ${CH_HOME}
-docker run -d --name Test_CH \
-	--ulimit nofile=262144:262144 \
-	--publish=9000:9000 \
-	--publish=9440:9440 \
-	--publish=8123:8123 \
-	--publish=8443:8443 \
-	--volume ${CH_HOME}/data:/var/lib/clickhouse \
-	--volume ${CH_HOME}/conf:/etc/clickhouse-server \
-	--volume ${CH_HOME}/log:/var/log/clickhouse-server \
-	clickhouse/clickhouse-server:$CH_VERSION
+browseVignettes("ClickHouseHTTP")
 ```
 
 # Alternatives

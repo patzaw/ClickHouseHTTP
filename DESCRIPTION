@@ -19,7 +19,9 @@ Description: 'ClickHouse' (<https://clickhouse.com/>)
    OLAP (online analytical processing of queries) database management system
    for real-time analytics using SQL. This 'DBI' backend
    relies on the 'ClickHouse' HTTP interface and support HTTPS protocol.
-URL: https://github.com/patzaw/ClickHouseHTTP
+URL:
+   https://patzaw.github.io/ClickHouseHTTP/,
+   https://github.com/patzaw/ClickHouseHTTP/
 BugReports: https://github.com/patzaw/ClickHouseHTTP/issues
 Depends:
    R (>= 4.1)

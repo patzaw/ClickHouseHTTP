@@ -5,3 +5,6 @@
 /*.Rproj
 README.html
 supp/local_tests
+
+/.quarto/
+**/*.quarto_ipynb
