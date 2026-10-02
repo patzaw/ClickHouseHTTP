@@ -1,18 +1,18 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>/404.html</loc></url>
-<url><loc>/LICENSE-text.html</loc></url>
-<url><loc>/Setting-up-ClickHouse-docker.html</loc></url>
-<url><loc>/Usage.html</loc></url>
-<url><loc>/articles/Setting-up-ClickHouse-docker.html</loc></url>
-<url><loc>/articles/Usage.html</loc></url>
-<url><loc>/articles/index.html</loc></url>
-<url><loc>/authors.html</loc></url>
-<url><loc>/index.html</loc></url>
-<url><loc>/news/index.html</loc></url>
-<url><loc>/reference/ClickHouseHTTP.html</loc></url>
-<url><loc>/reference/ClickHouseHTTPConnection-class.html</loc></url>
-<url><loc>/reference/ClickHouseHTTPDriver-class.html</loc></url>
-<url><loc>/reference/ClickHouseHTTPResult-class.html</loc></url>
-<url><loc>/reference/index.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/404.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/LICENSE-text.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/Setting-up-ClickHouse-docker.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/Usage.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/articles/Setting-up-ClickHouse-docker.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/articles/Usage.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/articles/index.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/authors.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/index.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/news/index.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/reference/ClickHouseHTTP.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/reference/ClickHouseHTTPDriver-class.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/reference/ClickHouseHTTPResult-class.html</loc></url>
+<url><loc>https://patzaw.github.io/neo2R/reference/index.html</loc></url>
 </urlset>
 

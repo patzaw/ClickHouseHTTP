@@ -1,0 +1,153 @@
+# Changelog
+
+## Version 1.1.2
+
+- Declared support for dbplyr’s 2nd edition interface
+  (`dbplyr_edition()`), fixing
+  [`dplyr::tbl()`](https://dplyr.tidyverse.org/reference/tbl.html) and
+  other dbplyr-based verbs which previously failed with “uses dbplyr’s
+  1st edition interface, which is no longer supported”
+  [\#7](https://github.com/patzaw/ClickHouseHTTP/issues/7).
+- Added a `sql_translation()` method so
+  [`as.character()`](https://rdrr.io/r/base/character.html)/[`as.integer()`](https://rdrr.io/r/base/integer.html)/
+  [`as.numeric()`](https://rdrr.io/r/base/numeric.html)/[`as.logical()`](https://rdrr.io/r/base/logical.html)/[`as.Date()`](https://rdrr.io/r/base/as.Date.html)/[`as.POSIXct()`](https://rdrr.io/r/base/as.POSIXlt.html),
+  `^`,
+  [`Sys.Date()`](https://rdrr.io/r/base/Sys.time.html)/[`Sys.time()`](https://rdrr.io/r/base/Sys.time.html)
+  and
+  [`sd()`](https://rdrr.io/r/stats/sd.html)/[`var()`](https://rdrr.io/r/stats/cor.html)
+  translate to ClickHouse’s own conversion/aggregate functions
+  (`toString`, `toInt64`, `toFloat64`, `toUInt8`, `toDate`,
+  `toDateTime`, `pow`, `today`, `now`, `stddevSamp`, `varSamp`) instead
+  of dbplyr’s ANSI defaults, which ClickHouse doesn’t recognize.
+  (Implemented with Claude Code)
+- Added `sql_table_analyze()` (no-op, ClickHouse has no `ANALYZE`) and
+  `db_connection_describe()` (shows the ClickHouse server/version
+  instead of just the connection class name) dbplyr methods.
+  (Implemented with Claude Code)
+- Added a `testthat` suite auditing dbplyr/ClickHouse SQL compatibility:
+  offline SQL-rendering checks (no server needed) plus an opt-in live
+  round-trip suite (set `CLICKHOUSE_TEST_HOST` to run it against a real
+  server). (Implemented with Claude Code)
+
+## Version 1.1.1
+
+- Fixed timezone-qualified DateTime columns being reported as
+  unsupported with `format = "TabSeparatedWithNamesAndTypes"`.
+- `format = "TabSeparatedWithNamesAndTypes"` now uses the timezone
+  embedded in a column’s type (e.g. `DateTime('Europe/Paris')`) when
+  present, falling back to the `session_timezone` connection setting
+  otherwise.
+
+## Version 1.1.0
+
+- Arrow timestamp conversion now uses the `session_timezone` connection
+  setting [\#6](https://github.com/patzaw/ClickHouseHTTP/issues/6).
+- Tab-separated DateTime values now match Arrow timestamps when
+  `session_timezone` is not defined.
+
+## Version 1.0.0
+
+CRAN release: 2026-05-18
+
+- Implemented
+  [`dbColumnInfo()`](https://dbi.r-dbi.org/reference/dbColumnInfo.html)
+  for `ClickHouseHTTPResult`: returns a data frame with `name` and
+  `type` columns describing the R types of a query result. Works for
+  both `Arrow` and `TabSeparatedWithNamesAndTypes` formats by parsing
+  the buffered response content without consuming the result cursor, so
+  [`dbFetch()`](https://dbi.r-dbi.org/reference/dbFetch.html) can still
+  be called afterwards.
+
+## Version 0.99.0
+
+- Migrated HTTP backend from `httr` to `httr2`: all requests are now
+  built using the httr2 request pipeline (`request()` → `req_headers()`
+  → `req_options()` → `req_perform()`).
+- The `reset_handle` parameter of
+  [`dbConnect()`](https://dbi.r-dbi.org/reference/dbConnect.html) now
+  maps to the httr2/curl `fresh_connect` option instead of the former
+  [`httr::handle_reset()`](https://httr.r-lib.org/reference/handle_pool.html).
+  Its behaviour is unchanged: set to TRUE to force a new TCP connection
+  for each request rather than reusing a pooled one.
+- HTTP error responses are handled manually (via `.query_success()`)
+  rather than relying on httr2’s automatic error raising, preserving
+  existing ClickHouse exception-code detection logic.
+- Minimum R version bumped to 4.1 (required by the native pipe `|>` used
+  in the httr2 request pipeline).
+
+## Version 0.3.5
+
+- Bug fix (identified and corrected by Claude): `Date` columns returned
+  as integers when using `format="Arrow"`. Newer ClickHouse versions
+  send `Date` as Arrow `date32` directly, but the internal type-casting
+  logic contained a `Date32 → int32` rule that was only ever intended as
+  an intermediate step for old ClickHouse (which sent `Date` as
+  `UInt16`). When applied to an already correctly typed `date32` column,
+  it stripped the date semantics before conversion to R, yielding an
+  integer instead of a `Date`. Fixed by rewriting the Arrow schema cast
+  helpers (`result.R`) to generate the two-step
+  `UInt16 → int32 → date32` chain only when the source column is
+  actually `UInt16`, leaving `date32` and `timestamp` columns untouched.
+
+## Version 0.3.4
+
+CRAN release: 2025-06-05
+
+- Don’t use session by default
+- Allow specifying database when manipulating tables
+
+## Version 0.3.3
+
+CRAN release: 2024-04-18
+
+- Managing data type according to changes in new version of data.table
+  (1.15.0)
+
+## Version 0.3.2
+
+CRAN release: 2023-07-04
+
+- Add the possibility to use
+  [`httr::handle_reset()`](https://httr.r-lib.org/reference/handle_pool.html)
+  when calling
+  [`httr::POST()`](https://httr.r-lib.org/reference/POST.html) to allow
+  several independent connections in the same session: when needed, set
+  the “reset_handle” parameter to TRUE when calling
+  [`dbConnect()`](https://dbi.r-dbi.org/reference/dbConnect.html)
+
+## Version 0.3.0
+
+CRAN release: 2023-02-16
+
+- `extended_headers` parameter in
+  [`dbConnect()`](https://dbi.r-dbi.org/reference/dbConnect.html)
+- check current ClickHouse user in
+  [`dbConnect()`](https://dbi.r-dbi.org/reference/dbConnect.html)
+- New contributor: <https://github.com/eusebiu>
+
+## Version 0.2.0
+
+`path` parameter in
+[`dbConnect()`](https://dbi.r-dbi.org/reference/dbConnect.html) =\> use
+of a reverse proxy
+
+## Version 0.1.3
+
+CRAN release: 2022-09-05
+
+`quote=""` when calling
+[`data.table::fread()`](https://rdrr.io/pkg/data.table/man/fread.html)
+
+## Version 0.1.2
+
+Explicit references to functions from dependencies
+
+## Version 0.1.1
+
+CRAN release: 2022-03-29
+
+Better support of “TabSeparatedWithNamesAndTypes” format
+
+## Version 0.1.0
+
+- First version

@@ -1,0 +1,137 @@
+# README
+
+# ClickHouseHTTP
+
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
+[![](https://cranlogs.r-pkg.org/badges/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)
+
+*ClickHouse* (<https://clickhouse.com/>) is an open-source, high
+performance columnar OLAP (online analytical processing of queries)
+database management system for real-time analytics using SQL. This *DBI*
+backend relies on the ‘ClickHouse’ HTTP interface and support HTTPS
+protocol.
+
+This package has been developed as an alternative to the excellent
+[RClickhouse](https://github.com/IMSMWU/RClickhouse) to provide secured
+connection through SSL using HTTPS (unfortunately SSL connection is not
+yet supported by RClickhouse).
+
+The ClickHouseHTTP R package is licensed under
+[GPL-3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+# Installation
+
+## From CRAN
+
+``` r
+
+install.packages("ClickHouseHTTP")
+```
+
+## Dependencies
+
+The following R packages available on CRAN are required:
+
+- [methods](https://CRAN.R-project.org/package=methods): Formal Methods
+  and Classes
+- [DBI](https://CRAN.R-project.org/package=DBI): R Database Interface
+- [httr2](https://CRAN.R-project.org/package=httr2): Perform HTTP
+  Requests and Process the Responses
+- [jsonlite](https://CRAN.R-project.org/package=jsonlite): A Simple and
+  Robust JSON Parser and Generator for R
+- [arrow](https://CRAN.R-project.org/package=arrow): Integration to
+  ‘Apache’ ‘Arrow’
+- [data.table](https://CRAN.R-project.org/package=data.table): Extension
+  of `data.frame`
+- [stats](https://CRAN.R-project.org/package=stats): The R Stats Package
+
+And those are suggested:
+
+- [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
+  Package for Dynamic Report Generation in R
+- [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic
+  Documents for R
+- [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
+  Manipulation
+- [dbplyr](https://CRAN.R-project.org/package=dbplyr): A ‘dplyr’ Back
+  End for Databases
+- [stringi](https://CRAN.R-project.org/package=stringi): Fast and
+  Portable Character String Processing Facilities
+- [stringr](https://CRAN.R-project.org/package=stringr): Simple,
+  Consistent Wrappers for Common String Operations
+- [testthat](https://CRAN.R-project.org/package=testthat): Unit Testing
+  for R
+- [withr](https://CRAN.R-project.org/package=withr): Run Code ‘With’
+  Temporarily Modified Global State
+
+## From github
+
+``` r
+
+pak::pkg_install("github::patzaw/ClickHouseHTTP")
+```
+
+# Documentation
+
+For detailed guides on using ClickHouseHTTP, please refer to the
+following vignettes:
+
+- [Working with ClickHouse Databases Using
+  ClickHouseHTTP](https://patzaw.github.io/ClickHouseHTTP/articles/Usage.html)
+
+- [Setting up a ClickHouse database using
+  docker](https://patzaw.github.io/ClickHouseHTTP/articles/Setting-up-ClickHouse-docker.html)
+
+To access vignettes from R, use:
+
+``` r
+
+browseVignettes("ClickHouseHTTP")
+```
+
+# Alternatives
+
+- [RClickhouse](https://github.com/IMSMWU/RClickhouse) is another DBI
+  backend for the ClickHouse database. It provides basic dplyr support
+  by auto-generating SQL-commands using dbplyr and is based on this [C++
+  Clickhouse Client](https://github.com/artpaul/clickhouse-cpp).
+
+- [clickhouse-r](https://github.com/hannes/clickhouse-r) is another DBI
+  backend for the ClickHouse database relying on HTTP protocol. It
+  provides SSL support but without peer verification for the moment.
+
+# Acknowledgments
+
+This work was supported by [UCB Pharma](https://www.ucb.com/) (Early
+Solutions department).
+
+# Package index
+
+## All functions
+
+- [`ClickHouseHTTP()`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTP.md)
+  : Create a ClickHouseHTTP DBI driver
+- [`dbSendQuery(`*`<ClickHouseHTTPConnection>`*`,`*`<character>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbGetInfo(`*`<ClickHouseHTTPConnection>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbListTables(`*`<ClickHouseHTTPConnection>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbExistsTable(`*`<ClickHouseHTTPConnection>`*`,`*`<character>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbReadTable(`*`<ClickHouseHTTPConnection>`*`,`*`<character>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbListFields(`*`<ClickHouseHTTPConnection>`*`,`*`<character>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbRemoveTable(`*`<ClickHouseHTTPConnection>`*`,`*`<ANY>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbCreateTable(`*`<ClickHouseHTTPConnection>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbAppendTable(`*`<ClickHouseHTTPConnection>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  [`dbWriteTable(`*`<ClickHouseHTTPConnection>`*`,`*`<ANY>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPConnection-class.md)
+  : ClickHouseHTTPConnection class.
+- [`dbConnect(`*`<ClickHouseHTTPDriver>`*`)`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPDriver-class.md)
+  : Driver for the ClickHouse database using HTTP(S) interface
+- [`ClickHouseHTTPResult-class`](https://patzaw.github.io/neo2R/reference/ClickHouseHTTPResult-class.md)
+  : ClickHouseHTTPResult class.
+
+# Articles
+
+### All vignettes
+
+- [Setting up a ClickHouse database using
+  docker](https://patzaw.github.io/neo2R/articles/Setting-up-ClickHouse-docker.md):
+- [Working with ClickHouse Databases Using
+  ClickHouseHTTP](https://patzaw.github.io/neo2R/articles/Usage.md):

@@ -1,0 +1,3 @@
+# ClickHouseHTTPResult class.
+
+ClickHouseHTTPResult class.
