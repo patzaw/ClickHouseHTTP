@@ -2,6 +2,8 @@
 
 ## Version 1.1.2
 
+CRAN release: 2026-10-02
+
 - Declared support for dbplyr’s 2nd edition interface
   (`dbplyr_edition()`), fixing
   [`dplyr::tbl()`](https://dplyr.tidyverse.org/reference/tbl.html) and
