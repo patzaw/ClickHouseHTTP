@@ -97,10 +97,6 @@ browseVignettes("ClickHouseHTTP")
   by auto-generating SQL-commands using dbplyr and is based on this [C++
   Clickhouse Client](https://github.com/artpaul/clickhouse-cpp).
 
-- [clickhouse-r](https://github.com/hannes/clickhouse-r) is another DBI
-  backend for the ClickHouse database relying on HTTP protocol. It
-  provides SSL support but without peer verification for the moment.
-
 # Acknowledgments
 
 This work was supported by [UCB Pharma](https://www.ucb.com/) (Early
