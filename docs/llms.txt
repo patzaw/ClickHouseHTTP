@@ -1,5 +1,3 @@
-# README
-
 # ClickHouseHTTP
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ClickHouseHTTP)](https://cran.r-project.org/package=ClickHouseHTTP)

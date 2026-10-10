@@ -1,6 +1,5 @@
 ---
-title: "README"
-output: 
+output:
   rmarkdown::github_document:
     number_sections: false
     toc: false
