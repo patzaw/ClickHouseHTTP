@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   Setting-up-ClickHouse-docker: Setting-up-ClickHouse-docker.html
   Usage: Usage.html
-last_built: 2026-10-10T05:43Z
+last_built: 2026-10-10T05:53Z
 urls:
   reference: https://patzaw.github.io/neo2R/reference
   article: https://patzaw.github.io/neo2R/articles

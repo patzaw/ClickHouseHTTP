@@ -75,19 +75,18 @@
 <p><em>ClickHouse</em> (<a href="https://clickhouse.com/" class="external-link uri">https://clickhouse.com/</a>) is an open-source, high performance columnar OLAP (online analytical processing of queries) database management system for real-time analytics using SQL. This <em>DBI</em> backend relies on the ‘ClickHouse’ HTTP interface and support HTTPS protocol.</p>
 <p>This package has been developed as an alternative to the excellent <a href="https://github.com/IMSMWU/RClickhouse" class="external-link">RClickhouse</a> to provide secured connection through SSL using HTTPS (unfortunately SSL connection is not yet supported by RClickhouse).</p>
 <p>The ClickHouseHTTP R package is licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" class="external-link">GPL-3</a>.</p>
-</div>
-<div class="section level1">
-<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h1>
 <div class="section level2">
-<h2 id="from-cran">From CRAN<a class="anchor" aria-label="anchor" href="#from-cran"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<div class="section level3">
+<h3 id="from-cran">From CRAN<a class="anchor" aria-label="anchor" href="#from-cran"></a>
+</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ClickHouseHTTP"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
-</h2>
+<div class="section level3">
+<h3 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
+</h3>
 <p>The following R packages available on CRAN are required:</p>
 <ul>
 <li>
@@ -126,16 +125,16 @@
 <a href="https://CRAN.R-project.org/package=withr" class="external-link">withr</a>: Run Code ‘With’ Temporarily Modified Global State</li>
 </ul>
 </div>
-<div class="section level2">
-<h2 id="from-github">From github<a class="anchor" aria-label="anchor" href="#from-github"></a>
-</h2>
+<div class="section level3">
+<h3 id="from-github">From github<a class="anchor" aria-label="anchor" href="#from-github"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"github::patzaw/ClickHouseHTTP"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level1">
-<h1 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
-</h1>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
 <p>For detailed guides on using ClickHouseHTTP, please refer to the following vignettes:</p>
 <ul>
 <li><p><a href="https://patzaw.github.io/ClickHouseHTTP/articles/Usage.html" class="external-link">Working with ClickHouse Databases Using ClickHouseHTTP</a></p></li>
@@ -145,9 +144,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"ClickHouseHTTP"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level1">
-<h1 id="alternatives">Alternatives<a class="anchor" aria-label="anchor" href="#alternatives"></a>
-</h1>
+<div class="section level2">
+<h2 id="alternatives">Alternatives<a class="anchor" aria-label="anchor" href="#alternatives"></a>
+</h2>
 <ul>
 <li>
 <a href="https://github.com/IMSMWU/RClickhouse" class="external-link">RClickhouse</a> is another DBI backend for the ClickHouse database. It provides basic dplyr support by auto-generating SQL-commands using dbplyr and is based on this <a href="https://github.com/artpaul/clickhouse-cpp" class="external-link">C++ Clickhouse Client</a>.</li>
@@ -158,12 +157,12 @@ backend for the ClickHouse database relying on HTTP protocol. It provides
 SSL support but without peer verification for the moment.
 -->
 </div>
-<div class="section level1">
-<h1 id="acknowledgments">Acknowledgments<a class="anchor" aria-label="anchor" href="#acknowledgments"></a>
-</h1>
+<div class="section level2">
+<h2 id="acknowledgments">Acknowledgments<a class="anchor" aria-label="anchor" href="#acknowledgments"></a>
+</h2>
 <p>This work was supported by <a href="https://www.ucb.com/" class="external-link">UCB Pharma</a> (Early Solutions department).</p>
 </div>
-
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">

@@ -23,15 +23,15 @@ yet supported by RClickhouse).
 The ClickHouseHTTP R package is licensed under
 [GPL-3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-# Installation
+## Installation
 
-## From CRAN
+### From CRAN
 
 ``` r
 install.packages("ClickHouseHTTP")
 ```
 
-## Dependencies
+### Dependencies
 
 The following R packages available on CRAN are required:
 
@@ -67,13 +67,13 @@ And those are suggested:
 - [withr](https://CRAN.R-project.org/package=withr): Run Code ‘With’
   Temporarily Modified Global State
 
-## From github
+### From github
 
 ``` r
 pak::pkg_install("github::patzaw/ClickHouseHTTP")
 ```
 
-# Documentation
+## Documentation
 
 For detailed guides on using ClickHouseHTTP, please refer to the
 following vignettes:
@@ -90,7 +90,7 @@ To access vignettes from R, use:
 browseVignettes("ClickHouseHTTP")
 ```
 
-# Alternatives
+## Alternatives
 
 - [RClickhouse](https://github.com/IMSMWU/RClickhouse) is another DBI
   backend for the ClickHouse database. It provides basic dplyr support
@@ -105,7 +105,7 @@ backend for the ClickHouse database relying on HTTP protocol. It provides
 SSL support but without peer verification for the moment.
 -->
 
-# Acknowledgments
+## Acknowledgments
 
 This work was supported by [UCB Pharma](https://www.ucb.com/) (Early
 Solutions department).
