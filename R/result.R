@@ -30,7 +30,7 @@ setMethod(
     } else {
       if (res@format == "Arrow") {
         toRet <- as.data.frame(.af_cast(
-          arrow::read_feather(res@env$content, as_data_frame = FALSE),
+          arrow::read_ipc_file(res@env$content, as_data_frame = FALSE),
           convert_uint = res@conn@convert_uint,
           session_timezone = .session_timezone(res@conn@settings)
         ))
@@ -311,7 +311,7 @@ setMethod(
       ))
     }
     if (res@format == "Arrow") {
-      af <- arrow::read_feather(res@env$content, as_data_frame = FALSE)
+      af <- arrow::read_ipc_file(res@env$content, as_data_frame = FALSE)
       rs <- af$schema
       rsl <- .sch_cast(
         rs,

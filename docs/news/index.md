@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 1.1.3
+
+- Replaced the deprecated
+  [`arrow::read_feather()`](https://arrow.apache.org/docs/r/reference/read_feather.html)
+  calls used to parse Arrow query results with
+  [`arrow::read_ipc_file()`](https://arrow.apache.org/docs/r/reference/read_ipc_file.html),
+  removing deprecation warnings with current versions of the `arrow`
+  package without changing result handling.
+
 ## Version 1.1.2
 
 CRAN release: 2026-10-02

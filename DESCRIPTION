@@ -1,7 +1,7 @@
 Package: ClickHouseHTTP
 Type: Package
 Title: A Simple HTTP Database Interface to 'ClickHouse'
-Version: 1.1.2
+Version: 1.1.3
 Authors@R: c(
     person(
         "Patrice", "Godard",
@@ -46,6 +46,6 @@ Suggests:
 Roxygen: list(markdown = TRUE)
 License: GPL-3
 Encoding: UTF-8
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
 Config/testthat/edition: 3
 VignetteBuilder: knitr

@@ -1,5 +1,14 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+## Version 1.1.3
+
+- Replaced the deprecated `arrow::read_feather()` calls used to parse Arrow
+  query results with `arrow::read_ipc_file()`, removing deprecation warnings
+  with current versions of the `arrow` package without changing result
+  handling.
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 ## Version 1.1.2
 
 - Declared support for dbplyr's 2nd edition interface (`dbplyr_edition()`),

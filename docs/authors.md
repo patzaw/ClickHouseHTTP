@@ -13,13 +13,13 @@ Source:
 [`DESCRIPTION`](https://github.com/patzaw/ClickHouseHTTP/blob/HEAD/DESCRIPTION)
 
 Godard P (2026). *ClickHouseHTTP: A Simple HTTP Database Interface to
-'ClickHouse'*. R package version 1.1.2,
+'ClickHouse'*. R package version 1.1.3,
 <https://patzaw.github.io/ClickHouseHTTP/>.
 
     @Manual{,
       title = {ClickHouseHTTP: A Simple HTTP Database Interface to 'ClickHouse'},
       author = {Patrice Godard},
       year = {2026},
-      note = {R package version 1.1.2},
+      note = {R package version 1.1.3},
       url = {https://patzaw.github.io/ClickHouseHTTP/},
     }
