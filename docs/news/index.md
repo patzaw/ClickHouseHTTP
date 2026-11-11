@@ -8,6 +8,9 @@
   [`arrow::read_ipc_file()`](https://arrow.apache.org/docs/r/reference/read_ipc_file.html),
   removing deprecation warnings with current versions of the `arrow`
   package without changing result handling.
+- Use
+  [`arrow::write_ipc_file()`](https://arrow.apache.org/docs/r/reference/write_ipc_file.html)
+  instead of `write_feather()` when writing Arrow data to ClickHouse.
 
 ## Version 1.1.2
 

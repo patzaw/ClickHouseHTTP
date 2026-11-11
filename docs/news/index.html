@@ -45,6 +45,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.3" id="version-113">Version 1.1.3<a class="anchor" aria-label="anchor" href="#version-113"></a></h2>
 <ul><li>Replaced the deprecated <code><a href="https://arrow.apache.org/docs/r/reference/read_feather.html" class="external-link">arrow::read_feather()</a></code> calls used to parse Arrow query results with <code><a href="https://arrow.apache.org/docs/r/reference/read_ipc_file.html" class="external-link">arrow::read_ipc_file()</a></code>, removing deprecation warnings with current versions of the <code>arrow</code> package without changing result handling.</li>
+<li>Use <code><a href="https://arrow.apache.org/docs/r/reference/write_ipc_file.html" class="external-link">arrow::write_ipc_file()</a></code> instead of <code>write_feather()</code> when writing Arrow data to ClickHouse.</li>
 </ul><!-----------------------------------------------------------------------------><!-----------------------------------------------------------------------------></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.2" id="version-112">Version 1.1.2<a class="anchor" aria-label="anchor" href="#version-112"></a></h2><p class="text-muted">CRAN release: 2026-10-02</p>

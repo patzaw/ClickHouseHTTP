@@ -6,6 +6,8 @@
   query results with `arrow::read_ipc_file()`, removing deprecation warnings
   with current versions of the `arrow` package without changing result
   handling.
+- Use `arrow::write_ipc_file()` instead of `write_feather()` when writing
+  Arrow data to ClickHouse.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->

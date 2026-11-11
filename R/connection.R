@@ -601,7 +601,7 @@ setMethod(
     }
     tmpf <- tempfile()
     on.exit(file.remove(tmpf))
-    arrow::write_feather(value, tmpf)
+    arrow::write_ipc_file(value, tmpf)
     query <- sprintf("INSERT INTO %s FORMAT Arrow", paste0(qdb, qname))
     res <- DBI::dbSendQuery(conn = conn, statement = query, file = tmpf)
     return(invisible(DBI::dbGetRowsAffected(res)))
